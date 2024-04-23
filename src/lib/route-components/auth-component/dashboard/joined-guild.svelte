@@ -6,7 +6,7 @@
 	<h2
 		class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0"
 	>
-		Recent Project(s)
+		Joined Guild(s)
 	</h2>
 
 	<div class="grid h-[450px] grid-cols-1 gap-[10px] overflow-auto py-[10px] lg:grid-cols-2">

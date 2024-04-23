@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { chartRender } from '$lib/route-components/auth-component/dashboard/charts/chart-render';
+	import JoinedGuild from '$lib/route-components/auth-component/dashboard/joined-guild.svelte';
 	import ProfileCard from '$lib/route-components/auth-component/dashboard/profile-card.svelte';
 	import RecentProjects from '$lib/route-components/auth-component/dashboard/recent-projects.svelte';
+	import WelcomeBack from '$lib/route-components/auth-component/dashboard/welcome-back.svelte';
 	import type { ChartConfiguration } from 'chart.js/auto';
 	// Access the canvas element using a Svelte directive
 	let canvasElement: string | HTMLCanvasElement;
@@ -90,10 +92,18 @@
 	</div>
 
 	<div class="">
+		<WelcomeBack />
+	</div>
+
+	<div class="">
 		<ProfileCard />
 	</div>
 
 	<div class="">
 		<RecentProjects />
+	</div>
+
+	<div class="">
+		<JoinedGuild />
 	</div>
 </div>

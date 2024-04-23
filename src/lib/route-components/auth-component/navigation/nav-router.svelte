@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { getAuthState } from '$lib';
 	import * as Avatar from '$lib/components/ui/avatar/index';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { AlignJustify } from 'lucide-svelte';
+
+	const authState = getAuthState();
 
 	const navigation = [
 		{
@@ -65,7 +68,12 @@
 			<div class="mt-[20px] flex flex-col gap-[20px]">
 				{#each navigation as route}
 					<Sheet.Title class="text-left">
-						<a href={route.url} class="text-muted-foreground underline">{route.title}</a>
+						<a
+							on:click={() => ($authState.activeURL = route.url)}
+							href={route.url}
+							class={$authState.activeURL === route.url ? 'text-muted-foreground underline' : ''}
+							>{route.title}</a
+						>
 					</Sheet.Title>
 				{/each}
 			</div>

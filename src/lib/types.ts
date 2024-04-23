@@ -11,5 +11,5 @@ export interface StaticStates {
 
 // types for authenticated states
 export interface AuthState {
-    activeItem: string
+    activeURL: string
 }

@@ -8,7 +8,6 @@ export const setStaticState = (state: StaticStates) => {
     const stateGenerator = writable(state);
     setContext("staticState", stateGenerator);
 };
-
 export const getStaticState = () => getContext<Writable<StaticStates>>("staticState");
 
 
@@ -17,5 +16,4 @@ export const setAuthState = (state: AuthState) => {
     const stateGenerator = writable(state);
     setContext("staticState", stateGenerator)
 }
-
 export const getAuthState = () => getContext<Writable<AuthState>>("staticState");

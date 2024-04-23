@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Input } from '$lib/components/ui/input/index';
-	import { Label } from '$lib/components/ui/label/index';
 	import * as Avatar from '$lib/components/ui/avatar/index';
 	import collab_icon from '$lib/assets/collab_icon.svg';
 	import * as Form from '$lib/components/ui/form';
@@ -9,6 +8,8 @@
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { getStaticState } from '$lib';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { enhance } from '$app/forms';
 
 	export let data: SuperValidated<Infer<LoginSchema>>;
 
@@ -16,9 +17,27 @@
 		validators: zodClient(loginSchema)
 	});
 
-	const { form: formData, enhance } = form;
+	const { form: formData } = form;
 
 	const staticState = getStaticState();
+
+	const loginActionNews: SubmitFunction = () => {
+		return async ({ result, update }) => {
+			const { status } = result;
+
+			switch (status) {
+				case 200:
+					break;
+
+				case 400:
+					break;
+
+				case 401:
+					break;
+			}
+			await update();
+		};
+	};
 </script>
 
 <div class="flex w-full flex-col gap-[20px] sm:w-[350px]">
@@ -27,7 +46,12 @@
 		<Avatar.Fallback>CI</Avatar.Fallback>
 	</Avatar.Root>
 
-	<form method="POST" use:enhance class="flex flex-col gap-[10px]">
+	<form
+		method="POST"
+		action="?/loginAction"
+		use:enhance={loginActionNews}
+		class="flex flex-col gap-[10px]"
+	>
 		<Form.Field {form} name="email">
 			<Form.Control let:attrs>
 				<Form.Label>Email</Form.Label>

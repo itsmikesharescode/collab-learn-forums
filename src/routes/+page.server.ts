@@ -10,15 +10,26 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-    default: async (event) => {
+
+
+    loginAction: async (event) => {
+        const { locals: { supabase } } = event;
+
         const form = await superValidate(event, zod(loginSchema));
+
         if (!form.valid) {
             return fail(400, {
                 form,
             });
-        }
-        return {
-            form,
         };
-    },
+
+        const { data: { user }, error: loginError } = await supabase.auth.signInWithPassword({
+            email: form.data.email,
+            password: form.data.password
+        });
+
+        if (loginError) return fail(401, { msg: loginError.message });
+        else if (user) return { msg: "Log in success." };
+
+    }
 };

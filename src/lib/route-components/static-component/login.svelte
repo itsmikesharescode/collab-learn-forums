@@ -4,9 +4,12 @@
 	import { Label } from '$lib/components/ui/label/index';
 	import * as Avatar from '$lib/components/ui/avatar/index';
 	import collab_icon from '$lib/assets/collab_icon.svg';
+	import { getStaticState } from '$lib';
+
+	const staticState = getStaticState();
 </script>
 
-<div class="flex flex-col gap-[20px] sm:w-[350px]">
+<div class="flex w-full flex-col gap-[20px] sm:w-[350px]">
 	<Avatar.Root class="mx-auto h-[100px] w-[100px] bg-black">
 		<Avatar.Image src={collab_icon} alt="@poorConnection" class="h-[100px] w-[100px]" />
 		<Avatar.Fallback>CI</Avatar.Fallback>
@@ -25,7 +28,9 @@
 	<Button>Log in</Button>
 
 	<div class="mt-[20px] flex flex-col gap-[10px]">
-		<Button variant="link">Forgot Password?</Button>
-		<Button variant="link">Create Account?</Button>
+		<Button variant="link" on:click={() => ($staticState.forgotPass = true)}
+			>Forgot Password?
+		</Button>
+		<Button variant="link" on:click={() => ($staticState.register = true)}>Create Account?</Button>
 	</div>
 </div>

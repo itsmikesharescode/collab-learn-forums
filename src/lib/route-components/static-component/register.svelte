@@ -10,8 +10,16 @@
 	import type { ResultModel } from '$lib/types';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
+	import CheckPassword from './check-password.svelte';
+	import { passwordStrength } from 'check-password-strength';
 
 	const staticState = getStaticState();
+
+	let password = '';
+	let showPasswordGuide = false;
+	$: passwordCheck = passwordStrength(password).value;
+	const checkPasswordEngine = () =>
+		passwordCheck === 'Strong' ? (showPasswordGuide = false) : (showPasswordGuide = true);
 
 	interface RegisterVal {
 		firstName: string[];
@@ -107,6 +115,8 @@
 			{/each}
 		</div>
 
+		<CheckPassword bind:showPasswordGuide />
+
 		<div class="flex w-full flex-col gap-1.5">
 			<Label for="password">Password</Label>
 			<Input
@@ -115,6 +125,8 @@
 				type="password"
 				id="password"
 				placeholder="Enter your password"
+				bind:value={password}
+				on:keyup={checkPasswordEngine}
 			/>
 
 			{#each formErrors?.password ?? [] as errorMsg}

@@ -84,7 +84,7 @@
 	});
 </script>
 
-<div class="p-[22px]">
+<div class="flex flex-col gap-[20px] p-[22px]">
 	<div class="">
 		<canvas bind:this={canvasElement} style="width: 100%; height: 200px;"></canvas>
 	</div>

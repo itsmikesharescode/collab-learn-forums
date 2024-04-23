@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { setAuthState } from '$lib';
+	import { setAuthState, setUserState } from '$lib';
 	import DesktopSidebar from '$lib/route-components/auth-component/navigation/desktop-sidebar.svelte';
 	import NavRouter from '$lib/route-components/auth-component/navigation/nav-router.svelte';
 	import type { LayoutServerData } from './$types';
@@ -9,6 +9,8 @@
 	setAuthState({
 		activeURL: '/dashboard'
 	});
+
+	setUserState(data.userData.data);
 
 	let nativeWidth = 0;
 </script>

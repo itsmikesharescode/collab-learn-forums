@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { getAuthState } from '$lib';
+	import { getAuthState, getUserState } from '$lib';
 	import * as Avatar from '$lib/components/ui/avatar/index';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { AlignJustify } from 'lucide-svelte';
 
 	const authState = getAuthState();
+	const userState = getUserState();
 
 	const navigation = [
 		{
@@ -37,7 +38,7 @@
 <svelte:window bind:innerWidth={nativeWidth} />
 
 <nav
-	class="sticky top-0 z-10 flex items-center border-b-[1px] border-black bg-white p-[10px] dark:border-white dark:bg-black sm:px-[30px]"
+	class="sticky top-0 z-10 flex items-center justify-between border-b-[1px] border-black bg-white p-[10px] dark:border-white dark:bg-black sm:px-[30px]"
 >
 	{#if nativeWidth < 640}
 		<button on:click={() => (showMobileSlider = true)}>
@@ -48,6 +49,10 @@
 	{#if nativeWidth >= 640}
 		<h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">Collab Learn</h1>
 	{/if}
+
+	<div class="">
+		<Button>Log out</Button>
+	</div>
 </nav>
 
 {#if nativeWidth < 640}
@@ -56,7 +61,7 @@
 			<Sheet.Header class="mt-[30px] flex flex-col gap-[20px]">
 				<div class="mx-auto flex flex-col items-center gap-[10px]">
 					<Avatar.Root class="h-[100px] w-[100px]">
-						<Avatar.Image src="https://github.com/shadcn.png" alt="@shadcn" />
+						<Avatar.Image src={$userState?.user_photo_link} alt="@shadcn" />
 						<Avatar.Fallback>CN</Avatar.Fallback>
 					</Avatar.Root>
 
@@ -64,17 +69,9 @@
 				</div>
 
 				<div class="">
-					<Sheet.Title class="text-left">Eviota, Mike John Baguinaon</Sheet.Title>
+					<Sheet.Title class="text-left">{$userState?.user_fullname}</Sheet.Title>
 					<Sheet.Description class="max-h-[100px] overflow-auto text-left">
-						Lorem ipsum, dolor sit amet consectetur adipisicing elit. Exercitationem, totam. Ut,
-						maxime aperiam magnam sapiente cum pariatur veritatis, dolorem culpa nemo eos et
-						voluptas nesciunt, maiores fuga adipisci optio autem quis sed? Sit atque natus suscipit
-						quod quaerat saepe iure voluptates commodi dicta sint dolorem sequi at consectetur
-						maiores ea, officia incidunt delectus necessitatibus voluptate harum quae tempora
-						consequatur quisquam? Sequi ipsa quae ipsum voluptatem ullam rem officia sunt qui, odio
-						perspiciatis velit quo dolor amet natus, tenetur provident modi impedit laudantium
-						veritatis. Blanditiis facilis in, sunt minima commodi quia tempora consectetur aliquam
-						laudantium incidunt optio perferendis illo aperiam. Animi!
+						{$userState?.user_bio}
 					</Sheet.Description>
 				</div>
 

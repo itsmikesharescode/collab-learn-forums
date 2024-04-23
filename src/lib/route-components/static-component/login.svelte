@@ -4,7 +4,19 @@
 	import { Label } from '$lib/components/ui/label/index';
 	import * as Avatar from '$lib/components/ui/avatar/index';
 	import collab_icon from '$lib/assets/collab_icon.svg';
+	import * as Form from '$lib/components/ui/form';
+	import { loginSchema, type LoginSchema } from '$lib/schema';
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { getStaticState } from '$lib';
+
+	export let data: SuperValidated<Infer<LoginSchema>>;
+
+	const form = superForm(data, {
+		validators: zodClient(loginSchema)
+	});
+
+	const { form: formData, enhance } = form;
 
 	const staticState = getStaticState();
 </script>
@@ -15,17 +27,27 @@
 		<Avatar.Fallback>CI</Avatar.Fallback>
 	</Avatar.Root>
 
-	<div class="flex w-full flex-col gap-1.5">
-		<Label for="email">Email:</Label>
-		<Input type="email" id="email" placeholder="Enter your email address" />
-	</div>
+	<form method="POST" use:enhance class="flex flex-col gap-[10px]">
+		<Form.Field {form} name="email">
+			<Form.Control let:attrs>
+				<Form.Label>Email</Form.Label>
+				<Input {...attrs} placeholder="Enter your email" bind:value={$formData.email} />
+			</Form.Control>
 
-	<div class="flex w-full flex-col gap-1.5">
-		<Label for="password">Password:</Label>
-		<Input type="password" id="password" placeholder="Enter your password" />
-	</div>
+			<Form.FieldErrors />
+		</Form.Field>
 
-	<Button>Log in</Button>
+		<Form.Field {form} name="password">
+			<Form.Control let:attrs>
+				<Form.Label>Password</Form.Label>
+				<Input {...attrs} placeholder="Enter your password" bind:value={$formData.password} />
+			</Form.Control>
+
+			<Form.FieldErrors />
+		</Form.Field>
+
+		<Form.Button>Log in</Form.Button>
+	</form>
 
 	<div class="mt-[20px] flex flex-col gap-[10px]">
 		<Button variant="link" on:click={() => ($staticState.forgotPass = true)}

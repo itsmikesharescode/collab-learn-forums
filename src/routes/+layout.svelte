@@ -5,7 +5,7 @@
 </script>
 
 <ModeWatcher />
-<div class="fixed bottom-0 m-[10px]">
+<div class="fixed bottom-0 z-10 m-[10px]">
 	<DarkMode />
 </div>
 <slot />

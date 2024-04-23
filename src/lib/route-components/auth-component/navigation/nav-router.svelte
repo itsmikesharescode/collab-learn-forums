@@ -37,7 +37,7 @@
 <svelte:window bind:innerWidth={nativeWidth} />
 
 <nav
-	class="sticky top-0 flex items-center border-b-[1px] border-black bg-white p-[10px] dark:border-white dark:bg-black sm:px-[30px]"
+	class="sticky top-0 z-10 flex items-center border-b-[1px] border-black bg-white p-[10px] dark:border-white dark:bg-black sm:px-[30px]"
 >
 	{#if nativeWidth < 640}
 		<button on:click={() => (showMobileSlider = true)}>
@@ -82,7 +82,10 @@
 					{#each navigation as route}
 						<Sheet.Title class="text-left">
 							<a
-								on:click={() => ($authState.activeURL = route.url)}
+								on:click={() => {
+									$authState.activeURL = route.url;
+									showMobileSlider = false;
+								}}
 								href={route.url}
 								class={$authState.activeURL === route.url ? 'text-muted-foreground underline' : ''}
 								>{route.title}</a

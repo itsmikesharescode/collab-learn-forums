@@ -10,6 +10,7 @@
 
 	// After the canvas element is mounted, invoke chartRender with lineData
 	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 
 	onMount(() => {
 		const lineData: ChartConfiguration<'line', number[], unknown> = {
@@ -86,7 +87,7 @@
 	});
 </script>
 
-<div class="flex flex-col gap-[20px] p-[22px]">
+<div class="flex flex-col gap-[20px] p-[22px]" in:fade>
 	<div class="">
 		<canvas bind:this={canvasElement} style="width: 100%; height: 200px;"></canvas>
 	</div>

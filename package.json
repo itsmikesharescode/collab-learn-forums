@@ -20,6 +20,7 @@
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "autoprefixer": "^10.4.16",
+    "chart.js": "^4.4.2",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-svelte": "^2.35.1",
@@ -56,5 +57,9 @@
     "tailwind-variants": "^0.2.1",
     "vaul-svelte": "^0.3.0",
     "zod": "^3.23.3"
-  }
+  },
+  "trustedDependencies": [
+    "core-js",
+    "svelte-preprocess"
+  ]
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getAuthState, setAuthState } from '$lib';
+	import { setAuthState } from '$lib';
 	import DesktopSidebar from '$lib/route-components/auth-component/navigation/desktop-sidebar.svelte';
 	import NavRouter from '$lib/route-components/auth-component/navigation/nav-router.svelte';
 

@@ -4,7 +4,6 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Sheet from '$lib/components/ui/sheet';
 	import { AlignJustify } from 'lucide-svelte';
-	import collab_icon from '$lib/assets/collab_icon.svg';
 
 	const authState = getAuthState();
 
@@ -38,7 +37,7 @@
 <svelte:window bind:innerWidth={nativeWidth} />
 
 <nav
-	class="sticky top-0 flex items-center border-b-[1px] border-black bg-white p-[10px] dark:border-white dark:bg-black"
+	class="sticky top-0 flex items-center border-b-[1px] border-black bg-white p-[10px] dark:border-white dark:bg-black sm:px-[30px]"
 >
 	{#if nativeWidth < 640}
 		<button on:click={() => (showMobileSlider = true)}>

@@ -17,3 +17,4 @@ export const setAuthState = (state: AuthState) => {
     setContext("staticState", stateGenerator)
 }
 export const getAuthState = () => getContext<Writable<AuthState>>("staticState");
+

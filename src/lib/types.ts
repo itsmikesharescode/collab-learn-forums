@@ -29,3 +29,20 @@ export type UserReference = {
     user_religion: string
     user_contact: string
 }
+
+//created_guild_tb
+export type CreatedGuildReference = {
+    id: number
+    created_at: string
+    user_id: string
+    host_name: string
+    is_private: boolean
+    guild_name: string
+    max_users: number
+    joined_count: number
+    description: string
+    passcode: string
+    image_url: string
+    host_photo: string
+    searchTerms: string
+}

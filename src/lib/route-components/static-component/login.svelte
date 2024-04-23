@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Input } from '$lib/components/ui/input/index';
+	import { Label } from '$lib/components/ui/label/index';
 	import * as Avatar from '$lib/components/ui/avatar/index';
 	import collab_icon from '$lib/assets/collab_icon.svg';
 	import * as Form from '$lib/components/ui/form';
@@ -12,33 +13,34 @@
 	import { enhance } from '$app/forms';
 	import type { ResultModel } from '$lib/types';
 	import { toast } from 'svelte-sonner';
-
-	export let data: SuperValidated<Infer<LoginSchema>>;
-
-	const form = superForm(data, {
-		validators: zodClient(loginSchema)
-	});
-
-	const { form: formData } = form;
+	import { goto } from '$app/navigation';
 
 	const staticState = getStaticState();
 
+	interface LoginVal {
+		email: string[];
+		password: string[];
+	}
+
+	let formErrors: LoginVal | null = null;
 	let loginLoader = false;
 	const loginActionNews: SubmitFunction = () => {
 		loginLoader = true;
 		return async ({ result, update }) => {
 			const {
 				status,
-				data: { msg }
-			} = result as ResultModel<{ msg: string }>;
+				data: { msg, errors }
+			} = result as ResultModel<{ msg: string; errors: LoginVal }>;
 
 			switch (status) {
 				case 200:
 					toast.success('Log in', { description: msg });
 					loginLoader = false;
+					goto('/dashboard');
 					break;
 
 				case 400:
+					formErrors = errors;
 					loginLoader = false;
 					break;
 
@@ -62,51 +64,52 @@
 		method="POST"
 		action="?/loginAction"
 		use:enhance={loginActionNews}
-		class="flex flex-col gap-[10px]"
+		class="flex flex-col gap-[20px]"
 	>
-		<Form.Field {form} name="email">
-			<Form.Control let:attrs>
-				<Form.Label>Email</Form.Label>
-				<Input
-					disabled={loginLoader}
-					{...attrs}
-					placeholder="Enter your email"
-					type="email"
-					bind:value={$formData.email}
-				/>
-			</Form.Control>
+		<div class="flex w-full flex-col gap-1.5">
+			<Label for="email">Email Address</Label>
+			<Input
+				disabled={loginLoader}
+				name="email"
+				type="email"
+				id="email"
+				placeholder="Enter your email address"
+			/>
+			{#each formErrors?.email ?? [] as errorMsg}
+				<p class="text-sm text-red-500">{errorMsg}</p>
+			{/each}
+		</div>
 
-			<Form.FieldErrors />
-		</Form.Field>
+		<div class="flex w-full flex-col gap-1.5">
+			<Label for="password">Password</Label>
+			<Input
+				disabled={loginLoader}
+				name="password"
+				type="password"
+				id="password"
+				placeholder="Enter your password"
+			/>
 
-		<Form.Field {form} name="password">
-			<Form.Control let:attrs>
-				<Form.Label>Password</Form.Label>
-				<Input
-					disabled={loginLoader}
-					{...attrs}
-					placeholder="Enter your password"
-					type="password"
-					bind:value={$formData.password}
-				/>
-			</Form.Control>
+			{#each formErrors?.password ?? [] as errorMsg}
+				<p class="text-sm text-red-500">{errorMsg}</p>
+			{/each}
+		</div>
 
-			<Form.FieldErrors />
-		</Form.Field>
-
-		<Form.Button disabled={loginLoader}>
+		<Button type="submit" disabled={loginLoader}>
 			{#if loginLoader}
 				Logging in...
 			{:else}
 				Log in
 			{/if}
-		</Form.Button>
+		</Button>
 	</form>
 
 	<div class="mt-[20px] flex flex-col gap-[10px]">
-		<Button variant="link" on:click={() => ($staticState.forgotPass = true)}
+		<Button disabled={loginLoader} variant="link" on:click={() => ($staticState.forgotPass = true)}
 			>Forgot Password?
 		</Button>
-		<Button variant="link" on:click={() => ($staticState.register = true)}>Create Account?</Button>
+		<Button disabled={loginLoader} variant="link" on:click={() => ($staticState.register = true)}
+			>Create Account?</Button
+		>
 	</div>
 </div>

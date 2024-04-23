@@ -6,9 +6,6 @@
 	import CheckCode from '$lib/route-components/static-component/reset-password/check-code.svelte';
 	import Verified from '$lib/route-components/static-component/reset-password/verified.svelte';
 
-	import type { PageData, PageServerData } from './$types.js';
-	export let data: PageServerData;
-
 	setStaticState({
 		register: false,
 		forgotPass: false,
@@ -31,6 +28,6 @@
 			<ForgotPassword />
 		{/if}
 	{:else}
-		<Login data={data.form} />
+		<Login />
 	{/if}
 </div>

@@ -1,12 +1,55 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Input } from '$lib/components/ui/input/index';
-	import { Label } from '$lib/components/ui/label/index';
 	import * as Avatar from '$lib/components/ui/avatar/index';
 	import collab_icon from '$lib/assets/collab_icon.svg';
+	import * as Form from '$lib/components/ui/form';
+	import { registerSchema, type RegisterSchema } from '$lib/schema';
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { getStaticState } from '$lib';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { enhance } from '$app/forms';
+	import type { ResultModel } from '$lib/types';
+	import { toast } from 'svelte-sonner';
+
+	export let registerForm: SuperValidated<Infer<RegisterSchema>>;
+
+	const form = superForm(registerForm, {
+		validators: zodClient(registerSchema)
+	});
+
+	const { form: formData } = form;
 
 	const staticState = getStaticState();
+
+	let registerLoader = false;
+	const registerActionNews: SubmitFunction = () => {
+		registerLoader = true;
+		return async ({ result, update }) => {
+			const {
+				status,
+				data: { msg }
+			} = result as ResultModel<{ msg: string }>;
+
+			switch (status) {
+				case 200:
+					toast.success('Log in', { description: msg });
+					registerLoader = false;
+					break;
+
+				case 400:
+					registerLoader = false;
+					break;
+
+				case 401:
+					toast.error('Log in', { description: msg });
+					registerLoader = false;
+					break;
+			}
+			await update();
+		};
+	};
 </script>
 
 <div class="flex w-full flex-col gap-[20px] sm:w-[350px]">
@@ -15,34 +58,56 @@
 		<Avatar.Fallback>CI</Avatar.Fallback>
 	</Avatar.Root>
 
-	<div class="flex w-full flex-col gap-1.5">
-		<Label for="firstName">Firt Name:</Label>
-		<Input type="text" id="firstName" placeholder="Enter your first name" />
-	</div>
+	<form
+		method="POST"
+		action="?/regiterAction"
+		use:enhance={registerActionNews}
+		class="flex flex-col gap-[10px]"
+	>
+		<Form.Field {form} name="firstName">
+			<Form.Control let:attrs>
+				<Form.Label>First Name</Form.Label>
+				<Input
+					disabled={registerLoader}
+					{...attrs}
+					placeholder="Enter your first name"
+					type="text"
+					bind:value={$formData.firstName}
+				/>
+			</Form.Control>
 
-	<div class="flex w-full flex-col gap-1.5">
-		<Label for="lastName">Last Name:</Label>
-		<Input type="text" id="lastName" placeholder="Enter your last name" />
-	</div>
+			<Form.FieldErrors />
+		</Form.Field>
 
-	<div class="flex w-full flex-col gap-1.5">
-		<Label for="email">Email Address:</Label>
-		<Input type="email" id="email" placeholder="Enter your email address" />
-	</div>
+		<Form.Field {form} name="lastName">
+			<Form.Control let:attrs>
+				<Form.Label>Last Name</Form.Label>
+				<Input
+					disabled={registerLoader}
+					{...attrs}
+					placeholder="Enter your last name"
+					type="text"
+					bind:value={$formData.lastName}
+				/>
+			</Form.Control>
 
-	<div class="flex w-full flex-col gap-1.5">
-		<Label for="password">Password:</Label>
-		<Input type="password" id="password" placeholder="Enter your password" />
-	</div>
+			<Form.FieldErrors />
+		</Form.Field>
 
-	<div class="flex w-full flex-col gap-1.5">
-		<Label for="confirmPassword">Confirm Password:</Label>
-		<Input type="password" id="confirmPassword" placeholder="Confirm your password" />
-	</div>
-
-	<Button>Register</Button>
+		<Form.Button disabled={registerLoader}>
+			{#if registerLoader}
+				Creating...
+			{:else}
+				Create Account
+			{/if}
+		</Form.Button>
+	</form>
 
 	<div class="mt-[20px] flex flex-col gap-[10px]">
-		<Button variant="link" on:click={() => ($staticState.register = false)}>Log in here?</Button>
+		<Button
+			disabled={registerLoader}
+			variant="link"
+			on:click={() => ($staticState.register = false)}>Log in here?</Button
+		>
 	</div>
 </div>

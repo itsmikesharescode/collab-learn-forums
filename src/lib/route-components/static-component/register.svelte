@@ -4,10 +4,6 @@
 	import { Label } from '$lib/components/ui/label/index';
 	import * as Avatar from '$lib/components/ui/avatar/index';
 	import collab_icon from '$lib/assets/collab_icon.svg';
-	import * as Form from '$lib/components/ui/form';
-	import { loginSchema, type LoginSchema } from '$lib/schema';
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { getStaticState } from '$lib';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { enhance } from '$app/forms';

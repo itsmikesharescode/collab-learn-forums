@@ -10,6 +10,8 @@
 	import { getStaticState } from '$lib';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { enhance } from '$app/forms';
+	import type { ResultModel } from '$lib/types';
+	import { toast } from 'svelte-sonner';
 
 	export let data: SuperValidated<Infer<LoginSchema>>;
 
@@ -21,18 +23,28 @@
 
 	const staticState = getStaticState();
 
+	let loginLoader = false;
 	const loginActionNews: SubmitFunction = () => {
+		loginLoader = true;
 		return async ({ result, update }) => {
-			const { status } = result;
+			const {
+				status,
+				data: { msg }
+			} = result as ResultModel<{ msg: string }>;
 
 			switch (status) {
 				case 200:
+					toast.success('Log in', { description: msg });
+					loginLoader = false;
 					break;
 
 				case 400:
+					loginLoader = false;
 					break;
 
 				case 401:
+					toast.error('Log in', { description: msg });
+					loginLoader = false;
 					break;
 			}
 			await update();
@@ -55,7 +67,13 @@
 		<Form.Field {form} name="email">
 			<Form.Control let:attrs>
 				<Form.Label>Email</Form.Label>
-				<Input {...attrs} placeholder="Enter your email" bind:value={$formData.email} />
+				<Input
+					disabled={loginLoader}
+					{...attrs}
+					placeholder="Enter your email"
+					type="email"
+					bind:value={$formData.email}
+				/>
 			</Form.Control>
 
 			<Form.FieldErrors />
@@ -64,13 +82,25 @@
 		<Form.Field {form} name="password">
 			<Form.Control let:attrs>
 				<Form.Label>Password</Form.Label>
-				<Input {...attrs} placeholder="Enter your password" bind:value={$formData.password} />
+				<Input
+					disabled={loginLoader}
+					{...attrs}
+					placeholder="Enter your password"
+					type="password"
+					bind:value={$formData.password}
+				/>
 			</Form.Control>
 
 			<Form.FieldErrors />
 		</Form.Field>
 
-		<Form.Button>Log in</Form.Button>
+		<Form.Button disabled={loginLoader}>
+			{#if loginLoader}
+				Logging in...
+			{:else}
+				Log in
+			{/if}
+		</Form.Button>
 	</form>
 
 	<div class="mt-[20px] flex flex-col gap-[10px]">

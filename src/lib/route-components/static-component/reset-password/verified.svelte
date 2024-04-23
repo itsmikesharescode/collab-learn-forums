@@ -14,23 +14,20 @@
 		<Avatar.Image src={collab_icon} alt="@poorConnection" class="h-[100px] w-[100px]" />
 		<Avatar.Fallback>CI</Avatar.Fallback>
 	</Avatar.Root>
-	<h3 class="scroll-m-20 text-2xl font-semibold tracking-tight">Find Your Account</h3>
+	<h3 class="scroll-m-20 text-2xl font-semibold tracking-tight">Update Password</h3>
 	<p class="text-sm text-muted-foreground">
-		Enter the email address associated with your account and we’ll send you a link to reset your
-		password.
+		You might receive email notifications from us for security and login purposes.
 	</p>
 
-	<p class="text-sm text-muted-foreground">
-		You may receive email notifications from us for security and login purposes.
-	</p>
 	<div class="mt-[10px] flex w-full flex-col gap-1.5">
-		<Label for="email">Email:</Label>
-		<Input type="email" id="email" placeholder="Enter your email address" />
+		<Label for="password">New Password:</Label>
+		<Input type="password" id="password" placeholder="Enter new password" />
 	</div>
 
-	<Button>Continue</Button>
-
-	<div class="mt-[20px] flex flex-col gap-[10px]">
-		<Button variant="link" on:click={() => ($staticState.forgotPass = false)}>Log in here</Button>
+	<div class="mt-[10px] flex w-full flex-col gap-1.5">
+		<Label for="password">Confirm New Password:</Label>
+		<Input type="password" id="password" placeholder="Confirm new password" />
 	</div>
+
+	<Button>Update Password</Button>
 </div>

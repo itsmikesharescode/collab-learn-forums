@@ -3,10 +3,14 @@
 	import ForgotPassword from '$lib/route-components/static-component/forgot-password.svelte';
 	import Login from '$lib/route-components/static-component/login.svelte';
 	import Register from '$lib/route-components/static-component/register.svelte';
+	import CheckCode from '$lib/route-components/static-component/reset-password/check-code.svelte';
+	import Verified from '$lib/route-components/static-component/reset-password/verified.svelte';
 
 	setStaticState({
 		register: false,
-		forgotPass: false
+		forgotPass: false,
+		checkCode: false,
+		verified: false
 	});
 
 	const staticState = getStaticState();
@@ -16,7 +20,13 @@
 	{#if $staticState.register}
 		<Register />
 	{:else if $staticState.forgotPass}
-		<ForgotPassword />
+		{#if $staticState.verified}
+			<Verified />
+		{:else if $staticState.checkCode}
+			<CheckCode />
+		{:else}
+			<ForgotPassword />
+		{/if}
 	{:else}
 		<Login />
 	{/if}

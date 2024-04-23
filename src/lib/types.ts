@@ -46,3 +46,18 @@ export type CreatedGuildReference = {
     host_photo: string
     searchTerms: string
 }
+
+
+//joined_guild_tb
+export type JoinedGuildReference = {
+    id: number
+    created_at: string
+    user_id: string
+    user_photo_link: string
+    user_fullname: string
+    guild_id: string
+    guild_name: string
+    passcode: string
+    host_name: string
+    guild_image_url: string
+}

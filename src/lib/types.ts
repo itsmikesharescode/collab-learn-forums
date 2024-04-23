@@ -1,5 +1,10 @@
 
-
+//form type
+export interface ResultModel<T> {
+    status: number
+    type: string
+    data: T
+}
 
 // types for static states
 export interface StaticStates {

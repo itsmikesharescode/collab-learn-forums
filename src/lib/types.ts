@@ -61,3 +61,51 @@ export type JoinedGuildReference = {
     host_name: string
     guild_image_url: string
 }
+
+
+//created_projects_tb
+export type CreatedProjectReference = {
+    id: number
+    created_at: string
+    user_id: string
+    project_name: string
+    max_users: number
+    description: string
+    passcode: string
+    host_name: string
+    is_private: boolean
+    joined_count: number
+    image_url: string
+    host_photo: string
+    searchTerms: string
+}
+
+//joined_project_tb
+export type JoinedProjectReference = {
+    id: number
+    created_at: string
+    user_id: string
+    user_photo_link: string
+    user_fullname: string
+    project_id: string
+    project_name: string
+    passcode: string
+    host_name: string
+    project_image_url: string
+}
+
+//created_module_tb
+export type CreatedModuleReference = {
+    id: number
+    created_at: string
+    user_id: string
+    module_name: string
+    description: string
+    host_name: string
+    host_photo: string
+    image_url: string
+    module_link: string
+    file_name: string
+    total_views: number
+    searchTerms: string
+}

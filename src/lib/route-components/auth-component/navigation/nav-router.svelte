@@ -65,7 +65,9 @@
 						<Avatar.Fallback>CN</Avatar.Fallback>
 					</Avatar.Root>
 
-					<Button>Edit Profile</Button>
+					<Button href="/edit-profile" on:click={() => (showMobileSlider = false)}
+						>Edit Profile</Button
+					>
 				</div>
 
 				<div class="">

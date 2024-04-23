@@ -7,5 +7,9 @@ export interface StaticStates {
     forgotPass: boolean
     checkCode: boolean
     verified: boolean
+}
 
+// types for authenticated states
+export interface AuthState {
+    activeItem: string
 }

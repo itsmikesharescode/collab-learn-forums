@@ -1,10 +1,11 @@
 <script lang="ts">
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Input } from '$lib/components/ui/input/index';
+	import { Label } from '$lib/components/ui/label/index';
 	import * as Avatar from '$lib/components/ui/avatar/index';
 	import collab_icon from '$lib/assets/collab_icon.svg';
 	import * as Form from '$lib/components/ui/form';
-	import { registerSchema, type RegisterSchema } from '$lib/schema';
+	import { loginSchema, type LoginSchema } from '$lib/schema';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { getStaticState } from '$lib';
@@ -12,33 +13,37 @@
 	import { enhance } from '$app/forms';
 	import type { ResultModel } from '$lib/types';
 	import { toast } from 'svelte-sonner';
-
-	export let registerForm: SuperValidated<Infer<RegisterSchema>>;
-
-	const form = superForm(registerForm, {
-		validators: zodClient(registerSchema)
-	});
-
-	const { form: formData } = form;
+	import { goto } from '$app/navigation';
 
 	const staticState = getStaticState();
 
+	interface RegisterVal {
+		firstName: string[];
+		lastName: string[];
+		email: string[];
+		password: string[];
+		confirmPassword: string[];
+	}
+
+	let formErrors: RegisterVal | null = null;
 	let registerLoader = false;
 	const registerActionNews: SubmitFunction = () => {
 		registerLoader = true;
 		return async ({ result, update }) => {
 			const {
 				status,
-				data: { msg }
-			} = result as ResultModel<{ msg: string }>;
+				data: { msg, errors }
+			} = result as ResultModel<{ msg: string; errors: RegisterVal }>;
 
 			switch (status) {
 				case 200:
 					toast.success('Log in', { description: msg });
 					registerLoader = false;
+					goto('/dashboard');
 					break;
 
 				case 400:
+					formErrors = errors;
 					registerLoader = false;
 					break;
 
@@ -60,47 +65,89 @@
 
 	<form
 		method="POST"
-		action="?/regiterAction"
+		action="?/registerAction"
 		use:enhance={registerActionNews}
-		class="flex flex-col gap-[10px]"
+		class="flex flex-col gap-[20px]"
 	>
-		<Form.Field {form} name="firstName">
-			<Form.Control let:attrs>
-				<Form.Label>First Name</Form.Label>
-				<Input
-					disabled={registerLoader}
-					{...attrs}
-					placeholder="Enter your first name"
-					type="text"
-					bind:value={$formData.firstName}
-				/>
-			</Form.Control>
+		<div class="flex w-full flex-col gap-1.5">
+			<Label for="firstName">First Name</Label>
+			<Input
+				disabled={registerLoader}
+				name="firstName"
+				type="text"
+				id="firstName"
+				placeholder="Enter your first name"
+			/>
+			{#each formErrors?.firstName ?? [] as errorMsg}
+				<p class="text-sm text-red-500">{errorMsg}</p>
+			{/each}
+		</div>
 
-			<Form.FieldErrors />
-		</Form.Field>
+		<div class="flex w-full flex-col gap-1.5">
+			<Label for="lastName">Last Name</Label>
+			<Input
+				disabled={registerLoader}
+				name="lastName"
+				type="text"
+				id="lastName"
+				placeholder="Enter your last name"
+			/>
+			{#each formErrors?.lastName ?? [] as errorMsg}
+				<p class="text-sm text-red-500">{errorMsg}</p>
+			{/each}
+		</div>
 
-		<Form.Field {form} name="lastName">
-			<Form.Control let:attrs>
-				<Form.Label>Last Name</Form.Label>
-				<Input
-					disabled={registerLoader}
-					{...attrs}
-					placeholder="Enter your last name"
-					type="text"
-					bind:value={$formData.lastName}
-				/>
-			</Form.Control>
+		<div class="flex w-full flex-col gap-1.5">
+			<Label for="email">Email Address</Label>
+			<Input
+				disabled={registerLoader}
+				name="email"
+				type="email"
+				id="email"
+				placeholder="Enter your email address"
+			/>
+			{#each formErrors?.email ?? [] as errorMsg}
+				<p class="text-sm text-red-500">{errorMsg}</p>
+			{/each}
+		</div>
 
-			<Form.FieldErrors />
-		</Form.Field>
+		<div class="flex w-full flex-col gap-1.5">
+			<Label for="password">Password</Label>
+			<Input
+				disabled={registerLoader}
+				name="password"
+				type="password"
+				id="password"
+				placeholder="Enter your password"
+			/>
 
-		<Form.Button disabled={registerLoader}>
+			{#each formErrors?.password ?? [] as errorMsg}
+				<p class="text-sm text-red-500">{errorMsg}</p>
+			{/each}
+		</div>
+
+		<div class="flex w-full flex-col gap-1.5">
+			<Label for="confirmPassword">Confirm Password</Label>
+			<Input
+				disabled={registerLoader}
+				name="confirmPassword"
+				type="password"
+				id="confirmPassword"
+				placeholder="Enter your password"
+			/>
+
+			{#each formErrors?.confirmPassword ?? [] as errorMsg}
+				<p class="text-sm text-red-500">{errorMsg}</p>
+			{/each}
+		</div>
+
+		<Button type="submit" disabled={registerLoader}>
 			{#if registerLoader}
 				Creating...
 			{:else}
-				Create Account
+				Sign Up Free
 			{/if}
-		</Form.Button>
+		</Button>
 	</form>
 
 	<div class="mt-[20px] flex flex-col gap-[10px]">

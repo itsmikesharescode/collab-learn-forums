@@ -1,6 +1,5 @@
 import type { Actions, PageServerLoad } from "./$types";
 import { loginSchema, registerSchema } from "$lib/schema";
-import { zod } from "sveltekit-superforms/adapters";
 import { fail, redirect } from "@sveltejs/kit";
 import type { ZodError } from "zod";
 
@@ -61,7 +60,7 @@ export const actions: Actions = {
         }
     },
 
-    registerAction: async ({ locals: { supabase }, request }) => {
+    registerAction: async ({ locals: { supabase, supabaseAdmin }, request }) => {
 
 
         const formData = Object.fromEntries(await request.formData());
@@ -107,7 +106,6 @@ export const actions: Actions = {
                     } catch (error) {
                         return fail(401, { msg: "There is an error." })
                     }
-
 
                 }
             }

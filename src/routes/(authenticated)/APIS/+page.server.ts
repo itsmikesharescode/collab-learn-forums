@@ -70,4 +70,16 @@ export const actions: Actions = {
         } else return redirect(302, "/");
 
     },
+
+    updatePasswordAction: async ({ locals: { supabase, safeGetSession }, request }) => {
+        const formData = Object.fromEntries(await request.formData());
+
+        try {
+
+        } catch (error) {
+            const zodError = error as ZodError;
+            const { fieldErrors } = zodError.flatten();
+            return fail(400, { errors: fieldErrors });
+        }
+    }
 };

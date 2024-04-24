@@ -3,7 +3,7 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label/index.js';
+	import { Label } from '$lib/components/ui/label/index';
 	import { fade, fly } from 'svelte/transition';
 	import { Textarea } from '$lib/components/ui/textarea/index';
 	import { enhance } from '$app/forms';

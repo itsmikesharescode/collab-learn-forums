@@ -93,15 +93,52 @@ export const actions: Actions = {
     },
 
     //guild route
-    createGuildAction: async ({ locals: { supabase, safeGetSession }, request }) => {
+    createGuildAction: async ({ locals: { supabase, safeGetSession, compressImage }, request }) => {
         const formData = Object.fromEntries(await request.formData());
-        console.log(formData)
+
         try {
+            const { user } = await safeGetSession();
             const result = createGuildSchema.parse(formData);
+            const convertedBlob = await compressImage(result.guildPhoto);
+
+            if (user && convertedBlob) {
+                console.log(convertedBlob.size)
+                const { data: hasPath, error: uploadError } = await supabase.storage.from("collab-learn-bucket").upload(`created-guilds/${user.id}/${result.guildPhoto.name}`, convertedBlob, {
+                    cacheControl: "3600",
+                    upsert: true
+                });
+
+                if (uploadError) return fail(401, { msg: uploadError.message });
+                else if (hasPath) {
+                    const { data: { publicUrl } } = supabase.storage.from("collab-learn-bucket").getPublicUrl(hasPath.path);
+
+                    if (publicUrl) {
+                        const { error: insertGuildError } = await supabase.from("created_guild_tb_new").insert([{
+                            user_id: user.id,
+                            guild_name: result.guildName,
+                            guild_max_users: Number(result.maxUsers),
+                            guild_joined_count: 0,
+                            guild_description: result.guildDescription,
+                            guild_host_name: result.hostName,
+                            guild_privacy: result.privacy,
+                            guild_photo_link: publicUrl,
+                            guild_host_photo_link: result.hostPhoto,
+                            guild_passcode: `${result.passcode.length ? result.passcode : null}`
+                        }]);
+
+                        if (insertGuildError) return fail(401, { msg: insertGuildError.message });
+                        else return { msg: "Guild Successfully Created." };
+                    }
+                }
+
+            }
+
+            return redirect(302, "/no-session");
+
+
         } catch (error) {
             const zodError = error as ZodError;
             const { fieldErrors } = zodError.flatten();
-            console.log(fieldErrors)
             return fail(400, { errors: fieldErrors });
         }
     }

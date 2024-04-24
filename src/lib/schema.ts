@@ -49,6 +49,8 @@ export const updatePasswordSchema = z.object({
 });
 
 export const createGuildSchema = z.object({
+    hostName: z.string(),
+    hostPhoto: z.string(),
     guildPhoto: z.instanceof(File).refine((file) => file.size > 0, { message: "Must upload a guild photo." }),
     guildName: z.string().min(4, { message: "Enter a valid guild name." }),
     maxUsers: z.string().refine(val => Number(val) > 0, { message: "Must enter a valid max users." }),
@@ -65,5 +67,5 @@ export const createGuildSchema = z.object({
             });
         }
     }
-})
+});
 

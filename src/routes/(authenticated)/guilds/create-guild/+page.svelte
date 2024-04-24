@@ -9,6 +9,9 @@
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import type { ResultModel } from '$lib/types';
+	import { getUserState } from '$lib';
+
+	const userState = getUserState();
 
 	let previewURL: string | undefined;
 	let files: FileList | undefined;
@@ -75,6 +78,9 @@
 			<Card.Description>Start collaborating to your co-peers through guild.</Card.Description>
 		</Card.Header>
 		<Card.Content class="grid grid-cols-1 gap-[20px] lg:grid-cols-2">
+			<input name="hostName" type="hidden" value={$userState?.user_fullname} />
+			<input name="hostPhoto" type="hidden" value={$userState?.user_photo_link} />
+
 			<div class="flex w-full flex-col gap-[20px]">
 				<Card.Description
 					>We use advanced image compression techniques to reduce your image size to 300kb while

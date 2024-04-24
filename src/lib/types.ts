@@ -17,35 +17,6 @@ export interface StaticStates {
 // types for authenticated states
 export interface AuthState {
     activeURL: string
-
-    dashboard: {
-        recentProjectArray: CreatedProjectReference[] | null,
-        joinedGuildArray: JoinedGuildReference[] | null
-    }
-
-    /*  projects: {
-         joinedProject: boolean
-         showEditTools: boolean
-         showSettings: boolean
-         createdProjects: CreatedProjectReference[] | null
-         projectObj: CreatedProjectReference | null
-     }
- 
-     guilds: {
-         createdGuilds: CreatedGuildReference[] | null
-         joinedGuild: boolean
-         guildObj: CreatedGuildReference | null
-         guildNotes: GuildWallReference[] | null
-         guildNoteObj: GuildWallReference | null
-         guildChats: GuildChatReference[] | null
-     }
- 
-     modules: {
-         createdModules: CreatedModuleReference[] | null
-         moduleObj: CreatedModuleReference | null
-         showModule: boolean
-          moduleComments: ModuleCommentsReference[] | null
-     } */
 }
 
 //user_list_tb

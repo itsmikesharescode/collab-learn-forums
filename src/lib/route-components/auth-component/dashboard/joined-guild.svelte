@@ -2,8 +2,9 @@
 	import { getAuthState } from '$lib';
 	import * as Card from '$lib/components/ui/card';
 	import * as Avatar from '$lib/components/ui/avatar';
+	import type { JoinedGuildReference } from '$lib/types';
 
-	const authState = getAuthState();
+	export let joinedGuilds: JoinedGuildReference[] | null;
 </script>
 
 <div class="">
@@ -16,7 +17,7 @@
 	<div
 		class="grid h-[450px] grid-cols-1 grid-rows-3 gap-[10px] overflow-auto py-[10px] lg:grid-cols-2"
 	>
-		{#each $authState.dashboard.joinedGuildArray ?? [] as joinedGuild}
+		{#each joinedGuilds ?? [] as joinedGuild}
 			<Card.Root class=" flex  flex-col gap-[20px] p-[10px]">
 				<div class="flex">
 					<Avatar.Root class="h-[100px] w-[100px]">

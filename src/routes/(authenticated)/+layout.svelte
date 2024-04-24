@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { setAuthState, setUserState } from '$lib';
+	import { getUserState, setAuthState, setUserState } from '$lib';
 	import DesktopSidebar from '$lib/route-components/auth-component/navigation/desktop-sidebar.svelte';
 	import NavRouter from '$lib/route-components/auth-component/navigation/nav-router.svelte';
 	import type { LayoutServerData } from './$types';
@@ -16,6 +16,11 @@
 	});
 
 	setUserState(data.userData.data);
+	const userState = getUserState();
+
+	$: if (data.userData.data) {
+		$userState = data.userData.data;
+	}
 
 	let nativeWidth = 0;
 </script>

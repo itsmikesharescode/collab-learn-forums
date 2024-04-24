@@ -16,38 +16,25 @@
 
 	const userState = getUserState();
 
-	/* const uploadProfileActionNews: SubmitFunction = () => {
-		uploadLoader = true;
-		return async ({ result, update }) => {
-			const {
-				status,
-				data: { msg, user }
-			} = result as ResultModel<{ msg: string; user: User }>;
+	const resetValues = () => {
+		bio = $userState?.user_bio;
+		firstName = $userState?.user_fullname.split(', ')[1];
+		lastName = $userState?.user_fullname.split(', ')[0];
+		address = $userState?.user_address;
+		barangay = $userState?.user_barangay;
+		city = $userState?.user_city;
+		religion = $userState?.user_religion;
+		contactNumber = $userState?.user_contact;
+	};
 
-			switch (status) {
-				case 200:
-					invalidateAll();
-					toast.success('Upload Profile', { description: msg });
-					uploadLoader = false;
-					file = undefined;
-					previewURL = undefined;
-					defaultState = true;
-					break;
-
-				case 401:
-					toast.error('Upload Profile', { description: msg });
-					uploadLoader = false;
-					file = undefined;
-					previewURL = undefined;
-					console.log(msg);
-					break;
-
-				default:
-					break;
-			}
-			await update();
-		};
-	}; */
+	let bio = $userState?.user_bio;
+	let firstName = $userState?.user_fullname.split(', ')[1];
+	let lastName = $userState?.user_fullname.split(', ')[0];
+	let address = $userState?.user_address;
+	let barangay = $userState?.user_barangay;
+	let city = $userState?.user_city;
+	let religion = $userState?.user_religion;
+	let contactNumber = $userState?.user_contact;
 
 	interface UpdateInformationVal {
 		bio: string[];
@@ -121,8 +108,11 @@
 						type="text"
 						id="firstName"
 						placeholder="Enter your first name."
-						value={$userState?.user_fullname.split(',')[1]}
+						bind:value={firstName}
 					/>
+					{#each formErrors?.firstName ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 
 				<div class="flex w-full flex-col gap-1.5">
@@ -133,8 +123,11 @@
 						type="text"
 						id="lastName"
 						placeholder="Enter your last name."
-						value={$userState?.user_fullname.split(',')[0]}
+						bind:value={lastName}
 					/>
+					{#each formErrors?.lastName ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 			</div>
 
@@ -147,8 +140,11 @@
 						type="text"
 						id="address"
 						placeholder="Enter your address."
-						value={$userState?.user_address}
+						bind:value={address}
 					/>
+					{#each formErrors?.address ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 
 				<div class="flex w-full flex-col gap-1.5">
@@ -159,8 +155,11 @@
 						type="text"
 						id="barangay"
 						placeholder="Enter your barangay."
-						value={$userState?.user_barangay}
+						bind:value={barangay}
 					/>
+					{#each formErrors?.barangay ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 			</div>
 
@@ -173,8 +172,11 @@
 						type="text"
 						id="city"
 						placeholder="Enter your city."
-						value={$userState?.user_city}
+						bind:value={city}
 					/>
+					{#each formErrors?.city ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 
 				<div class="flex w-full flex-col gap-1.5">
@@ -185,8 +187,11 @@
 						type="text"
 						id="religion"
 						placeholder="Enter your religion."
-						value={$userState?.user_religion}
+						bind:value={religion}
 					/>
+					{#each formErrors?.religion ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 			</div>
 
@@ -199,8 +204,11 @@
 						type="number"
 						id="contactNumber"
 						placeholder="Enter your contact number"
-						value={Number($userState?.user_contact)}
+						bind:value={contactNumber}
 					/>
+					{#each formErrors?.contactNumber ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 			</div>
 
@@ -212,8 +220,11 @@
 						disabled={!updateInfo || updateInfoLoader}
 						id="bio"
 						placeholder="Enter your bio"
-						value={$userState?.user_bio}
+						bind:value={bio}
 					/>
+					{#each formErrors?.bio ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 			</div>
 
@@ -224,14 +235,21 @@
 							<Button
 								disabled={updateInfoLoader}
 								class="w-full sm:max-w-fit"
-								on:click={() => (updateInfo = false)}>Cancel</Button
+								on:click={() => {
+									updateInfo = false;
+									resetValues();
+								}}>Cancel</Button
 							>
 						</div>
 
 						<div class="w-full sm:max-w-fit" in:fly={{ x: -200, duration: 350 }}>
-							<Button type="submit" disabled={updateInfoLoader} class="w-full sm:max-w-fit"
-								>Save Information</Button
-							>
+							<Button type="submit" disabled={updateInfoLoader} class="w-full sm:max-w-fit">
+								{#if updateInfoLoader}
+									Saving...
+								{:else}
+									Save Information
+								{/if}
+							</Button>
 						</div>
 					</div>
 				{:else}

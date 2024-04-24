@@ -104,11 +104,11 @@
 		<ProfileCard />
 	</div>
 
-	<div class="">
+	<!-- <div class="">
 		<RecentProjects recentProjects={data.recentProjects.data} />
 	</div>
 
 	<div class="">
 		<JoinedGuild joinedGuilds={data.joinedGuilds.data} />
-	</div>
+	</div> -->
 </div>

@@ -38,7 +38,7 @@ export const actions: Actions = {
 
     uploadProfileAction: async ({ locals: { supabase, safeGetSession, compressImage }, request }) => {
 
-        const profilePicture = (await request.formData()).get("uploadProfile") as File;
+        const profilePicture = (await request.formData()).get("uploadProfile") as File
 
         const { user } = await safeGetSession();
 

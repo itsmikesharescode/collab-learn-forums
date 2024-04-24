@@ -2,7 +2,7 @@
 	import * as Card from '$lib/components/ui/card';
 </script>
 
-<Card.Root>
+<Card.Root class="cursor-pointer">
 	<Card.Header>
 		<Card.Title>Card Title</Card.Title>
 		<Card.Description>Card Description</Card.Description>

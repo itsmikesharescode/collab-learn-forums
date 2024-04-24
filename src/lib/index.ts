@@ -1,5 +1,5 @@
 import { writable, type Writable } from "svelte/store"
-import type { AuthState, StaticStates } from "./types";
+import type { AuthState, StaticStates, UserReference } from "./types";
 import { getContext, setContext } from "svelte";
 
 
@@ -17,4 +17,11 @@ export const setAuthState = (state: AuthState) => {
     setContext("staticState", stateGenerator)
 }
 export const getAuthState = () => getContext<Writable<AuthState>>("staticState");
+
+// user stores
+export const setUserState = (state: UserReference | null) => {
+    const stateGenerator = writable(state);
+    setContext("userState", stateGenerator);
+}
+export const getUserState = () => getContext<Writable<UserReference | null>>("userState");
 

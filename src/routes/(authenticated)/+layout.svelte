@@ -1,11 +1,21 @@
 <script lang="ts">
-	import { setAuthState } from '$lib';
+	import { setAuthState, setUserState } from '$lib';
 	import DesktopSidebar from '$lib/route-components/auth-component/navigation/desktop-sidebar.svelte';
 	import NavRouter from '$lib/route-components/auth-component/navigation/nav-router.svelte';
+	import type { LayoutServerData } from './$types';
+
+	export let data: LayoutServerData;
 
 	setAuthState({
-		activeURL: '/dashboard'
+		activeURL: '/dashboard',
+
+		dashboard: {
+			recentProjectArray: data.recentProjects.data,
+			joinedGuildArray: data.joinedGuilds.data
+		}
 	});
+
+	setUserState(data.userData.data);
 
 	let nativeWidth = 0;
 </script>

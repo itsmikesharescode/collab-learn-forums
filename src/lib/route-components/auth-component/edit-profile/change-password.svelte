@@ -26,6 +26,7 @@
 
 			switch (status) {
 				case 200:
+					formErrors = null;
 					toast.success('Change Password', { description: msg });
 					changePassLoader = false;
 					break;
@@ -36,6 +37,7 @@
 					break;
 
 				case 401:
+					formErrors = null;
 					toast.error('Change Password', { description: msg });
 					changePassLoader = false;
 					break;
@@ -61,23 +63,39 @@
 			<div class="grid grid-cols-1 gap-[20px] md:grid-cols-2">
 				<div class="flex w-full flex-col gap-1.5">
 					<Label for="password">New Password:</Label>
-					<Input id="password" type="password" placeholder="Enter your new password" />
-					<!-- {#each formErrors?.address ?? [] as errorMsg}
-                        <p class="text-sm text-red-500">{errorMsg}</p>
-                    {/each} -->
+					<Input
+						disabled={changePassLoader}
+						id="password"
+						type="password"
+						placeholder="Enter your new password"
+					/>
+					{#each formErrors?.password ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 
 				<div class="flex w-full flex-col gap-1.5">
 					<Label for="confirmPassword">Confirm New Password:</Label>
-					<Input id="password" type="password" placeholder="Confirm your new password" />
-					<!-- {#each formErrors?.barangay ?? [] as errorMsg}
-                        <p class="text-sm text-red-500">{errorMsg}</p>
-                    {/each} -->
+					<Input
+						disabled={changePassLoader}
+						id="password"
+						type="password"
+						placeholder="Confirm your new password"
+					/>
+					{#each formErrors?.confirmPassword ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 			</div>
 
 			<div class="flex justify-end">
-				<Button class="w-full sm:max-w-fit">Change Password</Button>
+				<Button disabled={changePassLoader} type="submit" class="w-full sm:max-w-fit">
+					{#if changePassLoader}
+						Updating...
+					{:else}
+						Change Password
+					{/if}
+				</Button>
 			</div>
 		</form>
 	</Card.Content>

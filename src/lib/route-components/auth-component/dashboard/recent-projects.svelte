@@ -1,5 +1,9 @@
 <script lang="ts">
+	import { getAuthState } from '$lib';
 	import * as Card from '$lib/components/ui/card';
+	import * as Avatar from '$lib/components/ui/avatar';
+
+	const authState = getAuthState();
 </script>
 
 <div class="">
@@ -9,19 +13,28 @@
 		Recent Project(s)
 	</h2>
 
-	<div class="grid h-[450px] grid-cols-1 gap-[10px] overflow-auto py-[10px] lg:grid-cols-2">
-		{#each Array(10) as sample}
-			<Card.Root>
-				<Card.Header>
-					<Card.Title>Card Title</Card.Title>
-					<Card.Description>Card Description</Card.Description>
-				</Card.Header>
-				<Card.Content>
-					<p>Card Content</p>
-				</Card.Content>
-				<Card.Footer>
-					<p>Card Footer</p>
-				</Card.Footer>
+	<div
+		class="grid h-[450px] grid-cols-1 grid-rows-3 gap-[10px] overflow-auto py-[10px] lg:grid-cols-2"
+	>
+		{#each $authState.dashboard.recentProjectArray ?? [] as recentProject}
+			<Card.Root class=" flex flex-col justify-center gap-[20px] p-[10px]">
+				<div class="flex">
+					<Avatar.Root class="h-[100px] w-[100px]">
+						<Avatar.Image src={recentProject.image_url} alt="@shadcn" />
+						<Avatar.Fallback>CN</Avatar.Fallback>
+					</Avatar.Root>
+					<Card.Header>
+						<div class="flex flex-wrap items-center gap-[10px]">
+							<Card.Title>Project Name:</Card.Title>
+							<Card.Description>{recentProject.project_name}</Card.Description>
+						</div>
+
+						<div class="flex flex-wrap items-center gap-[10px]">
+							<Card.Title>Host:</Card.Title>
+							<Card.Description>{recentProject.host_name}</Card.Description>
+						</div>
+					</Card.Header>
+				</div>
 			</Card.Root>
 		{/each}
 	</div>

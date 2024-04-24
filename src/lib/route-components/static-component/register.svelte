@@ -5,8 +5,60 @@
 	import * as Avatar from '$lib/components/ui/avatar/index';
 	import collab_icon from '$lib/assets/collab_icon.svg';
 	import { getStaticState } from '$lib';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { enhance } from '$app/forms';
+	import type { ResultModel } from '$lib/types';
+	import { toast } from 'svelte-sonner';
+	import { goto } from '$app/navigation';
+	import CheckPassword from './check-password.svelte';
+	import { passwordStrength } from 'check-password-strength';
 
 	const staticState = getStaticState();
+
+	let password = '';
+	let showPasswordGuide = false;
+	$: passwordCheck = passwordStrength(password).value;
+	const checkPasswordEngine = () =>
+		passwordCheck === 'Strong' ? (showPasswordGuide = false) : (showPasswordGuide = true);
+
+	interface RegisterVal {
+		firstName: string[];
+		lastName: string[];
+		email: string[];
+		password: string[];
+		confirmPassword: string[];
+	}
+
+	let formErrors: RegisterVal | null = null;
+	let registerLoader = false;
+	const registerActionNews: SubmitFunction = () => {
+		registerLoader = true;
+		return async ({ result, update }) => {
+			const {
+				status,
+				data: { msg, errors }
+			} = result as ResultModel<{ msg: string; errors: RegisterVal }>;
+
+			switch (status) {
+				case 200:
+					toast.success('Log in', { description: msg });
+					registerLoader = false;
+					goto('/dashboard');
+					break;
+
+				case 400:
+					formErrors = errors;
+					registerLoader = false;
+					break;
+
+				case 401:
+					toast.error('Log in', { description: msg });
+					registerLoader = false;
+					break;
+			}
+			await update();
+		};
+	};
 </script>
 
 <div class="flex w-full flex-col gap-[20px] sm:w-[350px]">
@@ -15,34 +67,102 @@
 		<Avatar.Fallback>CI</Avatar.Fallback>
 	</Avatar.Root>
 
-	<div class="flex w-full flex-col gap-1.5">
-		<Label for="firstName">Firt Name:</Label>
-		<Input type="text" id="firstName" placeholder="Enter your first name" />
-	</div>
+	<form
+		method="POST"
+		action="?/registerAction"
+		use:enhance={registerActionNews}
+		class="flex flex-col gap-[20px]"
+	>
+		<div class="flex w-full flex-col gap-1.5">
+			<Label for="firstName">First Name</Label>
+			<Input
+				disabled={registerLoader}
+				name="firstName"
+				type="text"
+				id="firstName"
+				placeholder="Enter your first name"
+			/>
+			{#each formErrors?.firstName ?? [] as errorMsg}
+				<p class="text-sm text-red-500">{errorMsg}</p>
+			{/each}
+		</div>
 
-	<div class="flex w-full flex-col gap-1.5">
-		<Label for="lastName">Last Name:</Label>
-		<Input type="text" id="lastName" placeholder="Enter your last name" />
-	</div>
+		<div class="flex w-full flex-col gap-1.5">
+			<Label for="lastName">Last Name</Label>
+			<Input
+				disabled={registerLoader}
+				name="lastName"
+				type="text"
+				id="lastName"
+				placeholder="Enter your last name"
+			/>
+			{#each formErrors?.lastName ?? [] as errorMsg}
+				<p class="text-sm text-red-500">{errorMsg}</p>
+			{/each}
+		</div>
 
-	<div class="flex w-full flex-col gap-1.5">
-		<Label for="email">Email Address:</Label>
-		<Input type="email" id="email" placeholder="Enter your email address" />
-	</div>
+		<div class="flex w-full flex-col gap-1.5">
+			<Label for="email">Email Address</Label>
+			<Input
+				disabled={registerLoader}
+				name="email"
+				type="email"
+				id="email"
+				placeholder="Enter your email address"
+			/>
+			{#each formErrors?.email ?? [] as errorMsg}
+				<p class="text-sm text-red-500">{errorMsg}</p>
+			{/each}
+		</div>
 
-	<div class="flex w-full flex-col gap-1.5">
-		<Label for="password">Password:</Label>
-		<Input type="password" id="password" placeholder="Enter your password" />
-	</div>
+		<CheckPassword bind:showPasswordGuide />
 
-	<div class="flex w-full flex-col gap-1.5">
-		<Label for="confirmPassword">Confirm Password:</Label>
-		<Input type="password" id="confirmPassword" placeholder="Confirm your password" />
-	</div>
+		<div class="flex w-full flex-col gap-1.5">
+			<Label for="password">Password</Label>
+			<Input
+				disabled={registerLoader}
+				name="password"
+				type="password"
+				id="password"
+				placeholder="Enter your password"
+				bind:value={password}
+				on:keyup={checkPasswordEngine}
+			/>
 
-	<Button>Register</Button>
+			{#each formErrors?.password ?? [] as errorMsg}
+				<p class="text-sm text-red-500">{errorMsg}</p>
+			{/each}
+		</div>
+
+		<div class="flex w-full flex-col gap-1.5">
+			<Label for="confirmPassword">Confirm Password</Label>
+			<Input
+				disabled={registerLoader}
+				name="confirmPassword"
+				type="password"
+				id="confirmPassword"
+				placeholder="Enter your password"
+			/>
+
+			{#each formErrors?.confirmPassword ?? [] as errorMsg}
+				<p class="text-sm text-red-500">{errorMsg}</p>
+			{/each}
+		</div>
+
+		<Button type="submit" disabled={registerLoader}>
+			{#if registerLoader}
+				Creating...
+			{:else}
+				Sign Up Free
+			{/if}
+		</Button>
+	</form>
 
 	<div class="mt-[20px] flex flex-col gap-[10px]">
-		<Button variant="link" on:click={() => ($staticState.register = false)}>Log in here?</Button>
+		<Button
+			disabled={registerLoader}
+			variant="link"
+			on:click={() => ($staticState.register = false)}>Log in here?</Button
+		>
 	</div>
 </div>

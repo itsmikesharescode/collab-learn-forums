@@ -108,6 +108,8 @@ export const actions: Actions = {
                     upsert: true
                 });
 
+                console.log(uploadError)
+
                 if (uploadError) return fail(401, { msg: uploadError.message });
                 else if (hasPath) {
                     const { data: { publicUrl } } = supabase.storage.from("collab-learn-bucket").getPublicUrl(hasPath.path);

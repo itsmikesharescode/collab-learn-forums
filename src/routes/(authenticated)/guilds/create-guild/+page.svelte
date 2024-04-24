@@ -52,15 +52,12 @@
 
 			switch (status) {
 				case 200:
-					invalidateAll();
+					await goto('/guilds', { invalidateAll: true });
 					toast.success('Create Guild', { description: msg });
 					createGloader = false;
-					await tick();
-					goto('/guilds');
 					break;
 
 				case 400:
-					previewURL = undefined;
 					formErrors = errors;
 					createGloader = false;
 					break;

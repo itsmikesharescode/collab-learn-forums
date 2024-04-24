@@ -90,5 +90,18 @@ export const actions: Actions = {
             const { fieldErrors } = zodError.flatten();
             return fail(400, { errors: fieldErrors });
         }
+    },
+
+    //guild route
+    createGuildAction: async ({ locals: { supabase, safeGetSession }, request }) => {
+        const formData = Object.fromEntries(await request.formData());
+        console.log(formData)
+        try {
+
+        } catch (error) {
+            const zodError = error as ZodError;
+            const { fieldErrors } = zodError.flatten();
+            return fail(400, { errors: fieldErrors });
+        }
     }
 };

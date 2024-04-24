@@ -7,12 +7,7 @@
 	export let data: LayoutServerData;
 
 	setAuthState({
-		activeURL: '/dashboard',
-
-		dashboard: {
-			recentProjectArray: data.recentProjects.data,
-			joinedGuildArray: data.joinedGuilds.data
-		}
+		activeURL: '/dashboard'
 	});
 
 	setUserState(data.userData.data);

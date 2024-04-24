@@ -40,16 +40,15 @@ export type CreatedGuildReference = {
     id: number
     created_at: string
     user_id: string
-    host_name: string
-    is_private: boolean
     guild_name: string
-    max_users: number
-    joined_count: number
-    description: string
-    passcode: string
-    image_url: string
-    host_photo: string
-    searchTerms: string
+    guild_max_users: number
+    guild_joined_count: number
+    guild_description: string
+    guild_host_name: string
+    guild_privacy: string
+    guild_photo_link: string | null
+    guild_host_photo_link: string | null
+    guild_passcode: string | null
 }
 
 

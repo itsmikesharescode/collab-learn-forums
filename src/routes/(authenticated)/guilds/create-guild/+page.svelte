@@ -25,15 +25,29 @@
 		}
 	};
 
+	interface CreateGuildVal {
+		guildPhoto: string[];
+		guildName: string[];
+		maxUsers: string[];
+		guildDescription: string[];
+		passcode: string[];
+	}
+
+	let formErrors: CreateGuildVal | null = null;
+
 	const createGuildActionNews: SubmitFunction = () => {
 		return async ({ result, update }) => {
-			const { status } = result as ResultModel<{ msg: string }>;
+			const {
+				status,
+				data: { msg, errors }
+			} = result as ResultModel<{ msg: string; errors: CreateGuildVal }>;
 
 			switch (status) {
 				case 200:
 					break;
 
 				case 400:
+					formErrors = errors;
 					break;
 
 				case 401:
@@ -70,6 +84,9 @@
 				<div class="flex w-full flex-col gap-1.5">
 					<Label for="email-2">Guild Photo:</Label>
 					<input name="guildPhoto" type="file" bind:files on:change={handleFileChange} />
+					{#each formErrors?.guildPhoto ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 
 				{#if previewURL}
@@ -84,16 +101,25 @@
 				<div class="flex w-full flex-col gap-1.5">
 					<Label for="guildName">Guild Name:</Label>
 					<Input name="guildName" type="text" id="guildName" placeholder="Enter guild name." />
+					{#each formErrors?.guildName ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 
 				<div class="flex w-full flex-col gap-1.5">
 					<Label for="maxUsers">Max Users:</Label>
 					<Input name="maxUsers" type="number" id="maxUsers" placeholder="Enter maximum users." />
+					{#each formErrors?.maxUsers ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 
 				<div class="flex w-full flex-col gap-1.5">
 					<Label for="email-2">Guild Description:</Label>
 					<Textarea name="guildDescription" placeholder="Enter guild description." />
+					{#each formErrors?.guildDescription ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 
 				<RadioGroup.Root bind:value={privacy} class="flex  items-center">
@@ -105,10 +131,8 @@
 						<RadioGroup.Item value="private" id="r3" />
 						<Label for="r3">Private</Label>
 					</div>
-					<RadioGroup.Input name="spacing" />
+					<RadioGroup.Input name="privacy" />
 				</RadioGroup.Root>
-
-				<input name="privacy" type="hidden" value={privacy} />
 
 				<div class={privacy === 'public' ? 'hidden' : 'flex w-full flex-col gap-1.5 '}>
 					<Label for="passcode-2">Passcode:</Label>
@@ -119,6 +143,9 @@
 						placeholder="Enter passcode."
 						bind:value={passcode}
 					/>
+					{#each formErrors?.passcode ?? [] as errorMsg}
+						<p class="text-sm text-red-500">{errorMsg}</p>
+					{/each}
 				</div>
 			</div>
 		</Card.Content>

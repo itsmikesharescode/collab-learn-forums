@@ -1,4 +1,4 @@
-import { updateInformationSchema } from "$lib/schema";
+import { updateInformationSchema, updatePasswordSchema } from "$lib/schema";
 import { fail, redirect, type Actions } from "@sveltejs/kit";
 import type { ZodError } from "zod";
 
@@ -75,7 +75,16 @@ export const actions: Actions = {
         const formData = Object.fromEntries(await request.formData());
 
         try {
-            const result = updateInformationSchema.parse(formData);
+            const result = updatePasswordSchema.parse(formData);
+            if (result.passwordStrength != "Strong") return fail(401, { msg: "You must choose a strong password." });
+
+            const { data: { user }, error: updatePasswordError } = await supabase.auth.updateUser({
+                password: result.password
+            });
+
+            if (updatePasswordError) return fail(401, { msg: updatePasswordError.message });
+            else if (user) return fail(200, { msg: "Password Successfully Changed." });
+
         } catch (error) {
             const zodError = error as ZodError;
             const { fieldErrors } = zodError.flatten();

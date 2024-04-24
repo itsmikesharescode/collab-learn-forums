@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { getUserState } from '$lib';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Card from '$lib/components/ui/card';
 	import { Image } from 'lucide-svelte';
 	import { ArrowUpFromLine } from 'lucide-svelte';
+
+	const userState = getUserState();
 
 	//for uploading profile
 	let uploadLoader = false;
@@ -40,7 +43,15 @@
 			>
 				<input type="file" class="hidden" on:change={handleFileChange} />
 
-				<Image class="h-[100px] w-[100px]" />
+				{#if $userState?.user_photo_link}
+					<img
+						src={$userState.user_photo_link}
+						alt="poorConnection"
+						class="h-[100px] w-[100px] rounded-[10px]"
+					/>
+				{:else}
+					<Image class="h-[100px] w-[100px]" />
+				{/if}
 
 				<div class="flex gap-[10px]">
 					<p class="leading-7">Upload Profile</p>

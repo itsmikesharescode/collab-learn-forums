@@ -123,7 +123,7 @@ export const actions: Actions = {
                             guild_privacy: result.privacy,
                             guild_photo_link: publicUrl,
                             guild_host_photo_link: result.hostPhoto,
-                            guild_passcode: `${result.passcode.length ? result.passcode : null}`
+                            guild_passcode: `${result.passcode.length ? result.passcode : ""}`
                         }]);
 
                         if (insertGuildError) return fail(401, { msg: insertGuildError.message });

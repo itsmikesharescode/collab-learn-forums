@@ -2,6 +2,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
 	import * as RadioGroup from '$lib/components/ui/radio-group/index';
+	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index';
 	import * as Card from '$lib/components/ui/card';
 	import Textarea from '$lib/components/ui/textarea/textarea.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
@@ -11,7 +12,8 @@
 	import type { ResultModel } from '$lib/types';
 	import { getUserState } from '$lib';
 	import { toast } from 'svelte-sonner';
-	import { invalidateAll } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { tick } from 'svelte';
 
 	const userState = getUserState();
 
@@ -53,6 +55,8 @@
 					invalidateAll();
 					toast.success('Create Guild', { description: msg });
 					createGloader = false;
+					await tick();
+					goto('/guilds');
 					break;
 
 				case 400:
@@ -78,6 +82,18 @@
 </script>
 
 <Card.Root class="mt-[20px] border-none">
+	<Breadcrumb.Root class="mx-[22px]">
+		<Breadcrumb.List>
+			<Breadcrumb.Item>
+				<Breadcrumb.Link href="/guilds">Guilds</Breadcrumb.Link>
+			</Breadcrumb.Item>
+			<Breadcrumb.Separator />
+			<Breadcrumb.Item>
+				<Breadcrumb.Page>Create Guild</Breadcrumb.Page>
+			</Breadcrumb.Item>
+		</Breadcrumb.List>
+	</Breadcrumb.Root>
+
 	<form
 		method="post"
 		action="/APIS?/createGuildAction"

@@ -71,11 +71,11 @@ export const actions: Actions = {
 
     },
 
-    updatePasswordAction: async ({ locals: { supabase, safeGetSession }, request }) => {
+    changePasswordAction: async ({ locals: { supabase, safeGetSession }, request }) => {
         const formData = Object.fromEntries(await request.formData());
 
         try {
-
+            const result = updateInformationSchema.parse(formData);
         } catch (error) {
             const zodError = error as ZodError;
             const { fieldErrors } = zodError.flatten();

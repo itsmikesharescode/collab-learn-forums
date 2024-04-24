@@ -10,6 +10,8 @@
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import type { ResultModel } from '$lib/types';
 	import { getUserState } from '$lib';
+	import { toast } from 'svelte-sonner';
+	import { invalidateAll } from '$app/navigation';
 
 	const userState = getUserState();
 
@@ -37,8 +39,9 @@
 	}
 
 	let formErrors: CreateGuildVal | null = null;
-
+	let createGloader = false;
 	const createGuildActionNews: SubmitFunction = () => {
+		createGloader = true;
 		return async ({ result, update }) => {
 			const {
 				status,
@@ -47,13 +50,22 @@
 
 			switch (status) {
 				case 200:
+					invalidateAll();
+					toast.success('Create Guild', { description: msg });
+					createGloader = false;
 					break;
 
 				case 400:
+					previewURL = undefined;
 					formErrors = errors;
+					createGloader = false;
 					break;
 
 				case 401:
+					formErrors = null;
+					previewURL = undefined;
+					toast.error('Create Guild', { description: msg });
+					createGloader = false;
 					break;
 			}
 			await update();
@@ -78,8 +90,18 @@
 			<Card.Description>Start collaborating to your co-peers through guild.</Card.Description>
 		</Card.Header>
 		<Card.Content class="grid grid-cols-1 gap-[20px] lg:grid-cols-2">
-			<input name="hostName" type="hidden" value={$userState?.user_fullname} />
-			<input name="hostPhoto" type="hidden" value={$userState?.user_photo_link} />
+			<input
+				disabled={createGloader}
+				name="hostName"
+				type="hidden"
+				value={$userState?.user_fullname}
+			/>
+			<input
+				disabled={createGloader}
+				name="hostPhoto"
+				type="hidden"
+				value={$userState?.user_photo_link}
+			/>
 
 			<div class="flex w-full flex-col gap-[20px]">
 				<Card.Description
@@ -89,7 +111,13 @@
 
 				<div class="flex w-full flex-col gap-1.5">
 					<Label for="email-2">Guild Photo:</Label>
-					<input name="guildPhoto" type="file" bind:files on:change={handleFileChange} />
+					<input
+						disabled={createGloader}
+						name="guildPhoto"
+						type="file"
+						bind:files
+						on:change={handleFileChange}
+					/>
 					{#each formErrors?.guildPhoto ?? [] as errorMsg}
 						<p class="text-sm text-red-500">{errorMsg}</p>
 					{/each}
@@ -106,7 +134,13 @@
 			<div class="flex flex-col gap-[20px]">
 				<div class="flex w-full flex-col gap-1.5">
 					<Label for="guildName">Guild Name:</Label>
-					<Input name="guildName" type="text" id="guildName" placeholder="Enter guild name." />
+					<Input
+						disabled={createGloader}
+						name="guildName"
+						type="text"
+						id="guildName"
+						placeholder="Enter guild name."
+					/>
 					{#each formErrors?.guildName ?? [] as errorMsg}
 						<p class="text-sm text-red-500">{errorMsg}</p>
 					{/each}
@@ -114,7 +148,13 @@
 
 				<div class="flex w-full flex-col gap-1.5">
 					<Label for="maxUsers">Max Users:</Label>
-					<Input name="maxUsers" type="number" id="maxUsers" placeholder="Enter maximum users." />
+					<Input
+						disabled={createGloader}
+						name="maxUsers"
+						type="number"
+						id="maxUsers"
+						placeholder="Enter maximum users."
+					/>
 					{#each formErrors?.maxUsers ?? [] as errorMsg}
 						<p class="text-sm text-red-500">{errorMsg}</p>
 					{/each}
@@ -122,13 +162,17 @@
 
 				<div class="flex w-full flex-col gap-1.5">
 					<Label for="email-2">Guild Description:</Label>
-					<Textarea name="guildDescription" placeholder="Enter guild description." />
+					<Textarea
+						disabled={createGloader}
+						name="guildDescription"
+						placeholder="Enter guild description."
+					/>
 					{#each formErrors?.guildDescription ?? [] as errorMsg}
 						<p class="text-sm text-red-500">{errorMsg}</p>
 					{/each}
 				</div>
 
-				<RadioGroup.Root bind:value={privacy} class="flex  items-center">
+				<RadioGroup.Root disabled={createGloader} bind:value={privacy} class="flex  items-center">
 					<div class="flex items-center space-x-2">
 						<RadioGroup.Item value="public" id="r2" />
 						<Label for="r2">Public</Label>
@@ -156,7 +200,13 @@
 			</div>
 		</Card.Content>
 		<Card.Footer class="flex justify-end">
-			<Button type="submit" class="w-full sm:max-w-fit">Create Guild</Button>
+			<Button disabled={createGloader} type="submit" class="w-full sm:max-w-fit">
+				{#if createGloader}
+					Creating...
+				{:else}
+					Create Guild
+				{/if}
+			</Button>
 		</Card.Footer>
 	</form>
 </Card.Root>

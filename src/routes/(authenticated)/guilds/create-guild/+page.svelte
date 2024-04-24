@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
+	import * as RadioGroup from '$lib/components/ui/radio-group/index';
 	import * as Card from '$lib/components/ui/card';
 	import Textarea from '$lib/components/ui/textarea/textarea.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
@@ -41,6 +42,10 @@
 			await update();
 		};
 	};
+
+	let privacy = 'public';
+	let passcode = '';
+	$: privacy === 'public' ? (passcode = '') : '';
 </script>
 
 <Card.Root class="mt-[20px] border-none">
@@ -89,6 +94,31 @@
 				<div class="flex w-full flex-col gap-1.5">
 					<Label for="email-2">Guild Description:</Label>
 					<Textarea name="guildDescription" placeholder="Enter guild description." />
+				</div>
+
+				<RadioGroup.Root bind:value={privacy} class="flex  items-center">
+					<div class="flex items-center space-x-2">
+						<RadioGroup.Item value="public" id="r2" />
+						<Label for="r2">Public</Label>
+					</div>
+					<div class="flex items-center space-x-2">
+						<RadioGroup.Item value="private" id="r3" />
+						<Label for="r3">Private</Label>
+					</div>
+					<RadioGroup.Input name="spacing" />
+				</RadioGroup.Root>
+
+				<input name="privacy" type="hidden" value={privacy} />
+
+				<div class={privacy === 'public' ? 'hidden' : 'flex w-full flex-col gap-1.5 '}>
+					<Label for="passcode-2">Passcode:</Label>
+					<Input
+						name="passcode"
+						type="password"
+						id="passcode"
+						placeholder="Enter passcode."
+						bind:value={passcode}
+					/>
 				</div>
 			</div>
 		</Card.Content>

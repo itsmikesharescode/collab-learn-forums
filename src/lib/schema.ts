@@ -46,5 +46,24 @@ export const updatePasswordSchema = z.object({
             path: ["confirmPassword"]
         });
     }
+});
+
+export const createGuildSchema = z.object({
+    guildPhoto: z.instanceof(File),
+    guildName: z.string().min(4, { message: "Enter a valid guild name." }),
+    maxUsers: z.string().refine(val => Number(val) > 0, { message: "Must enter a valid max users." }),
+    guildDescription: z.string().min(5, { message: "Must enter a valid description." }),
+    privacy: z.string().min(1, { message: "Must choose privacy." }),
+    passcode: z.string()
+}).superRefine(({ privacy, passcode }, ctx) => {
+    if (privacy === "private") {
+        if (passcode.length < 6) {
+            ctx.addIssue({
+                code: "custom",
+                message: "Must enter a strong passcode.",
+                path: ["passcode"]
+            });
+        }
+    }
 })
 

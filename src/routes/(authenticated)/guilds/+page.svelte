@@ -12,7 +12,7 @@
 
 <div class="flex flex-col gap-[20px] p-[22px]" in:fade>
 	<SearchGuild />
-	<!-- <GuildPagination /> -->
+	<GuildPagination count={data.guildCount.count} />
 
 	<div class="grid grid-cols-1 gap-[10px] lg:grid-cols-2">
 		{#each data.createdGuilds.data ?? [] as guildObj}

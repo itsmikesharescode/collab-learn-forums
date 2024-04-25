@@ -16,7 +16,8 @@ export interface StaticStates {
 
 // types for authenticated states
 export interface AuthState {
-    activeURL: string
+    activeURL: string,
+    guilds: CreatedGuildReference[] | null
 }
 
 //user_list_tb

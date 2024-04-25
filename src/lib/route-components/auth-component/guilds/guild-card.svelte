@@ -8,6 +8,7 @@
 	import { Users, FolderLock, FolderOpen } from 'lucide-svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { getUserState } from '$lib';
+	import { enhance } from '$app/forms';
 
 	const userState = getUserState();
 
@@ -15,6 +16,7 @@
 
 	let notJoinedDialog = false;
 
+	// a client checker if joined
 	const checkIfJoined = () => {
 		const { guild_privacy, guild_joined_tb_new } = guildObj;
 		if (guild_privacy === 'private') {
@@ -30,9 +32,16 @@
 </script>
 
 <!-- prompt for letting them join if have passcode -->
-<form>
-	<AlertDialog.Root bind:open={notJoinedDialog}>
-		<AlertDialog.Content>
+
+<AlertDialog.Root bind:open={notJoinedDialog}>
+	<AlertDialog.Content>
+		<form
+			class="flex flex-col gap-[20px]"
+			method="post"
+			action="/APIS?/joinGuildAction"
+			enctype="multipart/form-data"
+			use:enhance
+		>
 			<AlertDialog.Header>
 				<AlertDialog.Title>{guildObj.guild_name}</AlertDialog.Title>
 				<AlertDialog.Description class="max-h-[350px] overflow-auto"
@@ -49,9 +58,9 @@
 				<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
 				<Button type="submit">Proceed</Button>
 			</AlertDialog.Footer>
-		</AlertDialog.Content>
-	</AlertDialog.Root>
-</form>
+		</form>
+	</AlertDialog.Content>
+</AlertDialog.Root>
 
 <Card.Root>
 	<Card.Header>

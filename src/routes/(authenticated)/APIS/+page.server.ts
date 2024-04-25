@@ -159,5 +159,9 @@ export const actions: Actions = {
             paginatedGuilds,
             msg: "Success loaded."
         }
+    },
+
+    joinGuildAction: async ({ locals: { supabase, safeGetSession }, request }) => {
+        console.log("fire")
     }
 };

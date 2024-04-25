@@ -6,8 +6,13 @@
 	import GuildPagination from '$lib/route-components/auth-component/guilds/guild-pagination.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { FilePlus } from 'lucide-svelte';
+	import { getAuthState } from '$lib';
 
 	export let data: LayoutServerData;
+
+	const authState = getAuthState();
+
+	$: data.createdGuilds.data ? ($authState.guilds = data.createdGuilds.data) : '';
 </script>
 
 <div class="flex flex-col gap-[20px] p-[22px]" in:fade>
@@ -15,7 +20,7 @@
 	<GuildPagination count={data.guildCount.count} />
 
 	<div class="grid grid-cols-1 gap-[10px] lg:grid-cols-2">
-		{#each data.createdGuilds.data ?? [] as guildObj}
+		{#each $authState.guilds ?? [] as guildObj}
 			<GuildCard {guildObj} />
 		{/each}
 	</div>

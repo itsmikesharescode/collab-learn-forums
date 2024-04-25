@@ -7,7 +7,8 @@
 	export let data: LayoutServerData;
 
 	setAuthState({
-		activeURL: '/dashboard'
+		activeURL: '/dashboard',
+		guilds: data.createdGuilds.data
 	});
 
 	setUserState(data.userData.data);

@@ -69,3 +69,7 @@ export const createGuildSchema = z.object({
     }
 });
 
+export const joinGuildSchema = z.object({
+    passcode: z.string().min(1, { message: "Must enter a passcode." })
+})
+

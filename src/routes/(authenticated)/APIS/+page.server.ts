@@ -1,4 +1,4 @@
-import { createGuildSchema, updateInformationSchema, updatePasswordSchema } from "$lib/schema";
+import { createGuildSchema, joinGuildSchema, updateInformationSchema, updatePasswordSchema } from "$lib/schema";
 import { fail, redirect, type Actions } from "@sveltejs/kit";
 import type { ZodError } from "zod";
 
@@ -162,6 +162,13 @@ export const actions: Actions = {
     },
 
     joinGuildAction: async ({ locals: { supabase, safeGetSession }, request }) => {
-        console.log("fire")
+        const formData = Object.fromEntries(await request.formData());
+        try {
+            const result = joinGuildSchema.parse(formData);
+        } catch (error) {
+            const zodError = error as ZodError;
+            const { fieldErrors } = zodError.flatten();
+            return fail(400, { errors: fieldErrors });
+        }
     }
 };

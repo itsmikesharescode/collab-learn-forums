@@ -96,7 +96,13 @@
 
 			<AlertDialog.Footer>
 				<AlertDialog.Cancel disabled={joinGuildLoader}>Cancel</AlertDialog.Cancel>
-				<Button disabled={joinGuildLoader} type="submit">Proceed</Button>
+				<Button disabled={joinGuildLoader} type="submit">
+					{#if joinGuildLoader}
+						Checking Pass...
+					{:else}
+						Proceed
+					{/if}
+				</Button>
 			</AlertDialog.Footer>
 		</form>
 	</AlertDialog.Content>

@@ -39,6 +39,13 @@ export type UserReference = {
     user_contact: string
 }
 
+export type JoinedGuildReferece = {
+    id: number
+    created_at: string
+    guild_id: number
+    user_id: string
+}
+
 //created_guild_tb
 export type CreatedGuildReference = {
     id: number
@@ -53,6 +60,10 @@ export type CreatedGuildReference = {
     guild_photo_link: string | null
     guild_host_photo_link: string | null
     guild_passcode: string | null
+    storage_id: string
+    storage_fullpath: string
+    storage_path: string
+    guild_joined_tb_new: JoinedGuildReferece[]
 }
 
 

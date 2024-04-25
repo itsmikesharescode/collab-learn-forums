@@ -10,7 +10,7 @@ export const load: LayoutServerLoad = async ({ locals: { supabase, safeGetSessio
     if (user) {
         return {
             userData: await supabase.from("user_list_tb").select("*").eq("user_id", user.id).limit(1).single() as PostgrestSingleResponse<UserReference>,
-            createdGuilds: await supabase.from("created_guild_tb_new").select("*").order("created_at", { ascending: false }).range(0, 5) as PostgrestSingleResponse<CreatedGuildReference[]>,
+            createdGuilds: await supabase.from("created_guild_tb_new").select(`*, guild_joined_tb_new ("*")`).order("created_at", { ascending: false }).range(0, 5) as PostgrestSingleResponse<CreatedGuildReference[]>,
             guildCount: await supabase.from("created_guild_tb_new").select("*", { count: "exact" }) as PostgrestSingleResponse<CreatedGuildReference[]>,
 
             /* createdGuilds: await supabase.from("created_guild_tb").select("*").order('id', { ascending: false }) as PostgrestSingleResponse<CreatedGuildReference[]>,

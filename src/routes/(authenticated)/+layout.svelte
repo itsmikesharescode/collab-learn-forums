@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { getUserState, setAuthState, setUserState } from '$lib';
+	import { getAuthState, getUserState, setAuthState, setUserState } from '$lib';
 	import DesktopSidebar from '$lib/route-components/auth-component/navigation/desktop-sidebar.svelte';
 	import NavRouter from '$lib/route-components/auth-component/navigation/nav-router.svelte';
 	import type { LayoutServerData } from './$types';
 
 	export let data: LayoutServerData;
 
-	setAuthState({
+	$: setAuthState({
 		activeURL: '/dashboard',
 		guilds: {
 			paginatedGuilds: data.createdGuilds.data,
@@ -34,13 +34,7 @@
 		</div>
 	{/if}
 
-	{#if nativeWidth >= 640}
-		<div class="max-h-[90dvh] overflow-auto">
-			<slot />
-		</div>
-	{:else}
-		<div class="">
-			<slot />
-		</div>
-	{/if}
+	<div class="max-h-[90dvh] overflow-auto">
+		<slot />
+	</div>
 </div>

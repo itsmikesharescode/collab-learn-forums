@@ -12,8 +12,6 @@
 	export let data: LayoutServerData;
 
 	const authState = getAuthState();
-
-	/* $: data.createdGuilds.data ? ($authState.guilds = data.createdGuilds.data) : ''; */
 </script>
 
 <div class="flex flex-col gap-[20px] p-[22px]" in:fade>

@@ -7,9 +7,7 @@ type ChartNode = string | HTMLCanvasElement;
 //here we are exporting const variable, which is an arrow function,
 //and the arrow function takes one argument called node
 export const chartRender = (node: ChartNode, options: ChartConfiguration) => {
-    console.log('Action')
-    console.log(node)
-    console.log(options)
+
 
     const _chart = new Chart(node, options)
     return {
@@ -18,7 +16,7 @@ export const chartRender = (node: ChartNode, options: ChartConfiguration) => {
             _chart.update()
         },
         destroy() {
-            console.log("Destroy function is called:")
+
             _chart.destroy()
         }
     }

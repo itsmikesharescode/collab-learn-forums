@@ -102,16 +102,13 @@ export const actions: Actions = {
             const convertedBlob = await compressImage(result.guildPhoto);
 
             if (user && convertedBlob) {
-                console.log(convertedBlob.size)
                 const { data: hasPath, error: uploadError } = await supabase.storage.from("collab-learn-bucket").upload(`created-guilds/${user.id}/${result.guildPhoto.name}`, convertedBlob, {
                     cacheControl: "3600",
                     upsert: true
-                });
-
-                console.log(uploadError)
-
+                })
                 if (uploadError) return fail(401, { msg: uploadError.message });
                 else if (hasPath) {
+                    const pathObj = hasPath as { path: string, id: string, fullPath: string };
                     const { data: { publicUrl } } = supabase.storage.from("collab-learn-bucket").getPublicUrl(hasPath.path);
 
                     if (publicUrl) {
@@ -125,7 +122,10 @@ export const actions: Actions = {
                             guild_privacy: result.privacy,
                             guild_photo_link: publicUrl,
                             guild_host_photo_link: result.hostPhoto,
-                            guild_passcode: `${result.passcode.length ? result.passcode : ""}`
+                            guild_passcode: `${result.passcode.length ? result.passcode : ""}`,
+                            storage_id: pathObj.id,
+                            storage_fullpath: pathObj.fullPath,
+                            storage_path: pathObj.path
                         }]);
 
                         if (insertGuildError) return fail(401, { msg: insertGuildError.message });

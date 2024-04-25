@@ -8,7 +8,10 @@
 
 	setAuthState({
 		activeURL: '/dashboard',
-		guilds: data.createdGuilds.data
+		guilds: {
+			paginatedGuilds: data.createdGuilds.data,
+			currentPage: 0
+		}
 	});
 
 	setUserState(data.userData.data);

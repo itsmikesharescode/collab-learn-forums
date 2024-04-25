@@ -7,12 +7,13 @@
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { FilePlus } from 'lucide-svelte';
 	import { getAuthState } from '$lib';
+	import { flip } from 'svelte/animate';
 
 	export let data: LayoutServerData;
 
 	const authState = getAuthState();
 
-	$: data.createdGuilds.data ? ($authState.guilds = data.createdGuilds.data) : '';
+	/* $: data.createdGuilds.data ? ($authState.guilds = data.createdGuilds.data) : ''; */
 </script>
 
 <div class="flex flex-col gap-[20px] p-[22px]" in:fade>
@@ -20,8 +21,10 @@
 	<GuildPagination count={data.guildCount.count} />
 
 	<div class="grid grid-cols-1 gap-[10px] lg:grid-cols-2">
-		{#each $authState.guilds ?? [] as guildObj}
-			<GuildCard {guildObj} />
+		{#each $authState.guilds.paginatedGuilds ?? [] as guildObj, index (guildObj.id)}
+			<div class="" animate:flip={{ duration: 350 }}>
+				<GuildCard {guildObj} />
+			</div>
 		{/each}
 	</div>
 

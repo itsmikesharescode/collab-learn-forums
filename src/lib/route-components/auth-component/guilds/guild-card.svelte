@@ -3,12 +3,14 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
-	import type { CreatedGuildReference } from '$lib/types';
+	import type { CreatedGuildReference, ResultModel } from '$lib/types';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Users, FolderLock, FolderOpen } from 'lucide-svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { getUserState } from '$lib';
 	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { toast } from 'svelte-sonner';
 
 	const userState = getUserState();
 
@@ -29,10 +31,39 @@
 
 		return console.log('Its public');
 	};
+
+	let formErrors: { passcode: string[] } | null = null;
+	let joinGuildLoader = false;
+	const joinGuildActionNews: SubmitFunction = () => {
+		joinGuildLoader = true;
+		return async ({ result, update }) => {
+			const {
+				status,
+				data: { msg, errors }
+			} = result as ResultModel<{ msg: string; errors: { passcode: string[] } }>;
+
+			switch (status) {
+				case 200:
+					toast.success('Join Guild', { description: msg });
+					joinGuildLoader = false;
+					break;
+
+				case 400:
+					formErrors = errors;
+					joinGuildLoader = false;
+					break;
+
+				case 401:
+					toast.error('Join Guild', { description: msg });
+					joinGuildLoader = false;
+					break;
+			}
+			await update();
+		};
+	};
 </script>
 
 <!-- prompt for letting them join if have passcode -->
-
 <AlertDialog.Root bind:open={notJoinedDialog}>
 	<AlertDialog.Content>
 		<form
@@ -40,7 +71,7 @@
 			method="post"
 			action="/APIS?/joinGuildAction"
 			enctype="multipart/form-data"
-			use:enhance
+			use:enhance={joinGuildActionNews}
 		>
 			<AlertDialog.Header>
 				<AlertDialog.Title>{guildObj.guild_name}</AlertDialog.Title>
@@ -50,13 +81,22 @@
 			</AlertDialog.Header>
 
 			<div class="flex w-full flex-col gap-1.5">
-				<Label for="email-2">Guild Passcode:</Label>
-				<Input type="email" id="email-2" placeholder="Enter guild passcode." />
+				<Label for="passcode">Guild Passcode:</Label>
+				<Input
+					disabled={joinGuildLoader}
+					name="passcode"
+					type="password"
+					id="passcode"
+					placeholder="Enter guild passcode."
+				/>
+				{#each formErrors?.passcode ?? [] as errorMsg}
+					<p class="text-sm text-red-500">{errorMsg}</p>
+				{/each}
 			</div>
 
 			<AlertDialog.Footer>
-				<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-				<Button type="submit">Proceed</Button>
+				<AlertDialog.Cancel disabled={joinGuildLoader}>Cancel</AlertDialog.Cancel>
+				<Button disabled={joinGuildLoader} type="submit">Proceed</Button>
 			</AlertDialog.Footer>
 		</form>
 	</AlertDialog.Content>

@@ -112,23 +112,24 @@ export const actions: Actions = {
                     const { data: { publicUrl } } = supabase.storage.from("collab-learn-bucket").getPublicUrl(hasPath.path);
 
                     if (publicUrl) {
-                        const { error: insertGuildError } = await supabase.from("created_guild_tb_new").insert([{
-                            user_id: user.id,
-                            guild_name: result.guildName,
-                            guild_max_users: Number(result.maxUsers),
-                            guild_joined_count: 0,
-                            guild_description: result.guildDescription,
-                            guild_host_name: result.hostName,
-                            guild_privacy: result.privacy,
-                            guild_photo_link: publicUrl,
-                            guild_host_photo_link: result.hostPhoto,
-                            guild_passcode: `${result.passcode.length ? result.passcode : ""}`,
-                            storage_id: pathObj.id,
-                            storage_fullpath: pathObj.fullPath,
-                            storage_path: pathObj.path
-                        }]);
 
-                        if (insertGuildError) return fail(401, { msg: insertGuildError.message });
+                        // will fire a procedure function in edge :D!
+                        const { error: insertEdgeFunctionError } = await supabase.rpc("create_guild_new", {
+                            user_id_param: user.id,
+                            guild_name_param: result.guildName,
+                            guild_max_users_param: Number(result.maxUsers),
+                            guild_joined_count_param: 1,
+                            guild_description_param: result.guildDescription,
+                            guild_host_name_param: result.hostName,
+                            guild_privacy_param: result.privacy,
+                            guild_photo_link_param: publicUrl,
+                            guild_host_photo_link_param: result.hostPhoto,
+                            guild_passcode_param: `${result.passcode.length ? result.passcode : ""}`,
+                            storage_id_param: pathObj.id,
+                            storage_fullpath_param: pathObj.fullPath,
+                            storage_path_param: pathObj.path
+                        });
+                        if (insertEdgeFunctionError) return fail(401, { msg: insertEdgeFunctionError.message });
                         else return { msg: "Guild Successfully Created." };
                     }
                 }

@@ -1,5 +1,8 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
 	import type { CreatedGuildReference } from '$lib/types';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Users, FolderLock, FolderOpen } from 'lucide-svelte';
@@ -10,6 +13,8 @@
 
 	export let guildObj: CreatedGuildReference;
 
+	let notJoinedDialog = false;
+
 	const checkIfJoined = () => {
 		const { guild_privacy, guild_joined_tb_new } = guildObj;
 		if (guild_privacy === 'private') {
@@ -17,12 +22,36 @@
 
 			if (isJoined.includes($userState?.user_id ?? '')) return console.log('Is joined');
 
-			return console.log('Not joined');
+			return (notJoinedDialog = true);
 		}
 
 		return console.log('Its public');
 	};
 </script>
+
+<!-- prompt for letting them join if have passcode -->
+<form>
+	<AlertDialog.Root bind:open={notJoinedDialog}>
+		<AlertDialog.Content>
+			<AlertDialog.Header>
+				<AlertDialog.Title>{guildObj.guild_name}</AlertDialog.Title>
+				<AlertDialog.Description class="max-h-[350px] overflow-auto"
+					>{guildObj.guild_description}</AlertDialog.Description
+				>
+			</AlertDialog.Header>
+
+			<div class="flex w-full flex-col gap-1.5">
+				<Label for="email-2">Guild Passcode:</Label>
+				<Input type="email" id="email-2" placeholder="Enter guild passcode." />
+			</div>
+
+			<AlertDialog.Footer>
+				<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+				<Button type="submit">Proceed</Button>
+			</AlertDialog.Footer>
+		</AlertDialog.Content>
+	</AlertDialog.Root>
+</form>
 
 <Card.Root>
 	<Card.Header>

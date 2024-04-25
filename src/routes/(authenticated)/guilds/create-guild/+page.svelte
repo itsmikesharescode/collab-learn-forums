@@ -54,12 +54,14 @@
 				case 200:
 					await goto('/guilds', { invalidateAll: true });
 					toast.success('Create Guild', { description: msg });
+					console.log(msg);
 					createGloader = false;
 					break;
 
 				case 400:
 					formErrors = errors;
 					createGloader = false;
+
 					break;
 
 				case 401:
@@ -67,6 +69,7 @@
 					previewURL = undefined;
 					toast.error('Create Guild', { description: msg });
 					createGloader = false;
+					console.log(msg);
 					break;
 			}
 			await update();

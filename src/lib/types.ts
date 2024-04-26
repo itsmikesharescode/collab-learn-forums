@@ -17,6 +17,10 @@ export interface StaticStates {
 // types for authenticated states
 export interface AuthState {
     activeURL: string,
+    guilds: {
+        viewingContent: boolean
+        guildObj: CreatedGuildReference | null
+    }
 
 }
 

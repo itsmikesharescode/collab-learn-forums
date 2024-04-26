@@ -25,13 +25,12 @@
 		if (guild_privacy === 'private') {
 			const isJoined = guild_joined_tb_new.map((joinedVec) => joinedVec.user_id);
 
-			if (isJoined.includes($userState?.user_id ?? ''))
-				return await goto(`/guilds/${guildObj.id}?${guildObj.storage_id}`);
+			if (isJoined.includes($userState?.user_id ?? '')) return console.log('JOINED');
 
 			return (notJoinedDialog = true);
 		}
 
-		return await goto(`/guilds/${guildObj.id}?${guildObj.storage_id}`);
+		return console.log('PUBLIC');
 	};
 
 	let formErrors: { passcode: string[] } | null = null;
@@ -46,7 +45,7 @@
 
 			switch (status) {
 				case 200:
-					await goto(`/guilds/${guildObj.id}?${guildObj.storage_id}`, { invalidateAll: true });
+					invalidateAll();
 					toast.success('Join Guild', { description: msg });
 					joinGuildLoader = false;
 					break;

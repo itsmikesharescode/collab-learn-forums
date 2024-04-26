@@ -4,22 +4,25 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	import { getAuthState, getUserState, supabase } from '$lib';
-	import type { GuildWallReference, ResultModel } from '$lib/types';
+	import { getAuthState, getGuildContentStore, getUserState, supabase } from '$lib';
+	import type { ResultModel } from '$lib/types';
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { toast } from 'svelte-sonner';
 	import { onMount } from 'svelte';
-	import { invalidateAll } from '$app/navigation';
+
+	import { flip } from 'svelte/animate';
+	import { fly } from 'svelte/transition';
+	import DeletePost from './wall-content-operation/deletePost.svelte';
 
 	const authState = getAuthState();
 
 	const { guildObj } = $authState.guilds;
 	const userState = getUserState();
 
-	let newPostDialog = false;
+	const guildContentStore = getGuildContentStore();
 
-	let wallPosts: GuildWallReference[] | null = [];
+	let newPostDialog = false;
 
 	//get wall post
 	const getWallPost = async () => {
@@ -27,12 +30,12 @@
 			const { data, error } = await $supabase
 				?.from('guild_wall_tb_post_new')
 				.select('*')
-				.order('created_at', { ascending: true })
+				.order('created_at', { ascending: false })
 				.eq('guild_id', guildObj?.id);
 
 			if (error) console.log(error.message);
 
-			wallPosts = data;
+			$guildContentStore.wallPost = data;
 		}
 	};
 
@@ -50,9 +53,10 @@
 
 			switch (status) {
 				case 200:
-					invalidateAll();
-					wallPostLoader = false;
+					getWallPost();
 					toast.success('Wall Post', { description: msg });
+					wallPostLoader = false;
+					newPostDialog = false;
 					break;
 
 				case 400:
@@ -120,33 +124,37 @@
 	</AlertDialog.Content>
 </AlertDialog.Root>
 
-{#if wallPosts?.length}
-	{#each wallPosts ?? [] as wallPostObj}
-		<Card.Root>
-			<Card.Header>
-				<div class="flex items-center gap-[10px]">
-					<Avatar.Root>
-						<Avatar.Image src={wallPostObj.user_photo_link} alt="@shadcn" />
-						<Avatar.Fallback>{wallPostObj.user_fullname[0]}</Avatar.Fallback>
-					</Avatar.Root>
-					<div class="">
-						<Card.Title>{wallPostObj.user_fullname}</Card.Title>
-						<Card.Description>{wallPostObj.created_at}</Card.Description>
-					</div>
-				</div>
-			</Card.Header>
-			<Card.Content>
-				<p>
-					{wallPostObj.wall_post}
-				</p>
-			</Card.Content>
+<div class="mt-[20px] grid grid-cols-1 gap-[10px]">
+	{#if $guildContentStore.wallPost?.length}
+		{#each $guildContentStore.wallPost ?? [] as wallPostObj, index (wallPostObj.id)}
+			<div class="" animate:flip={{ duration: 350 }} transition:fly={{ x: 200, duration: 600 }}>
+				<Card.Root>
+					<Card.Header>
+						<div class="flex items-center gap-[10px]">
+							<Avatar.Root>
+								<Avatar.Image src={wallPostObj.user_photo_link} alt="@shadcn" />
+								<Avatar.Fallback>{wallPostObj.user_fullname[0]}</Avatar.Fallback>
+							</Avatar.Root>
+							<div class="">
+								<Card.Title>{wallPostObj.user_fullname}</Card.Title>
+								<Card.Description>{wallPostObj.created_at}</Card.Description>
+							</div>
+						</div>
+					</Card.Header>
+					<Card.Content class="break-words">
+						<p>
+							{wallPostObj.wall_post}
+						</p>
+					</Card.Content>
 
-			<Card.Footer class="flex items-center justify-end gap-[10px]">
-				<Button variant="secondary">Edit Post</Button>
-				<Button variant="destructive">Delete Post</Button>
-			</Card.Footer>
-		</Card.Root>
-	{/each}
-{:else}
-	<p class="text-[14px]">There is no wall post.</p>
-{/if}
+					<Card.Footer class="flex items-center justify-end gap-[10px]">
+						<Button variant="secondary">Edit Post</Button>
+						<DeletePost {getWallPost} {wallPostObj} />
+					</Card.Footer>
+				</Card.Root>
+			</div>
+		{/each}
+	{:else}
+		<p class="text-[14px]">There is no wall post.</p>
+	{/if}
+</div>

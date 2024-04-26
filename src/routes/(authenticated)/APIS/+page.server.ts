@@ -213,5 +213,13 @@ export const actions: Actions = {
             const { fieldErrors } = zodError.flatten();
             return fail(400, { errors: fieldErrors });
         }
+    },
+
+    deleteWallPostAction: async ({ locals: { supabase, safeGetSession }, request }) => {
+        const formData = await request.formData();
+        const wallPostId = formData.get("wallPostId") as string;
+
+        console.log(wallPostId)
+        console.log('here');
     }
 };

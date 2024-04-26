@@ -1,10 +1,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { LayoutServerData } from '../../$types';
-	import { getAuthState, supabase } from '$lib';
+	import { getAuthState, setGuildContentStore, supabase } from '$lib';
 	import { goto } from '$app/navigation';
 	import GuildContent from '$lib/route-components/auth-component/guilds/guild-content.svelte';
-	import type { GuildWallReference } from '$lib/types';
+
+	setGuildContentStore({
+		wallPost: null,
+		chatFeed: null,
+		members: null
+	});
 
 	const authState = getAuthState();
 

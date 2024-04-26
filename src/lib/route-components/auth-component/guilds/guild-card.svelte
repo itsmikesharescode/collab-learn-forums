@@ -28,14 +28,18 @@
 
 			if (isJoined.includes($userState?.user_id ?? '')) {
 				$authState.guilds.guildObj = guildObj;
-				return await goto(`/guilds/${guildObj.guild_name}?=${guildObj.storage_id}`);
+				return await goto(
+					`/guilds/${guildObj.guild_name}?=${$page.url.search.slice(2)}?${guildObj.storage_id}`
+				);
 			}
 			return (notJoinedDialog = true);
 		}
 
 		$authState.guilds.guildObj = guildObj;
 
-		return await goto(`/guilds/${guildObj.guild_name}?=${guildObj.storage_id}`);
+		return await goto(
+			`/guilds/${guildObj.guild_name}?=${$page.url.search.slice(2)}?${guildObj.storage_id}`
+		);
 	};
 
 	let formErrors: { passcode: string[] } | null = null;
@@ -50,9 +54,9 @@
 
 			switch (status) {
 				case 200:
-					await goto(`/guilds/${guildObj.guild_name}?=${guildObj.storage_id}`, {
-						invalidateAll: true
-					});
+					await goto(
+						`/guilds/${guildObj.guild_name}?=${$page.url.search.slice(2)}?${guildObj.storage_id}`
+					);
 					$authState.guilds.guildObj = guildObj;
 					toast.success('Join Guild', { description: msg });
 					joinGuildLoader = false;

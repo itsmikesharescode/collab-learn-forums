@@ -13,7 +13,7 @@ export const load: LayoutServerLoad = async ({ locals: { supabase, safeGetSessio
         let final = 5;
 
 
-        if (url.pathname === "/guilds") {
+        if (url.pathname.startsWith("/guilds")) {
             if (url.search) {
                 initial = Number(url.search.slice(2).split("-")[0]);
                 final = Number(url.search.slice(2).split("-")[1]);

@@ -8,6 +8,7 @@
 	import { FilePlus } from 'lucide-svelte';
 	import { flip } from 'svelte/animate';
 	import { getAuthState } from '$lib';
+	import GuildContent from '$lib/route-components/auth-component/guilds/guild-content.svelte';
 
 	export let data: LayoutServerData;
 
@@ -15,7 +16,7 @@
 </script>
 
 {#if $authState.guilds.viewingContent}
-	<Button on:click={() => ($authState.guilds.viewingContent = false)}>Back</Button>
+	<GuildContent />
 {:else}
 	<div class="flex flex-col gap-[20px] p-[22px]" in:fade>
 		<SearchGuild />

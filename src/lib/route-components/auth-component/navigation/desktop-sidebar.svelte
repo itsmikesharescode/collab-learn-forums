@@ -10,7 +10,7 @@
 		},
 
 		{
-			url: '/guilds',
+			url: '/guilds?=0-5-0',
 			title: 'GUILDS'
 		},
 

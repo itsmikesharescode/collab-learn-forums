@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { getAuthState } from '$lib';
 	import * as Card from '$lib/components/ui/card';
-	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index.js';
+	import * as Breadcrumb from '$lib/components/ui/breadcrumb/index';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Users, FolderLock, FolderOpen } from 'lucide-svelte';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import guildDefaultIcon from '$lib/assets/guild_detault_photo.jpg';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import WallContent from './guild-content/wall-content.svelte';
+	import { page } from '$app/stores';
 
 	const authState = getAuthState();
 
@@ -20,9 +21,7 @@
 	<Breadcrumb.Root class="mx-[20px]">
 		<Breadcrumb.List>
 			<Breadcrumb.Item>
-				<Breadcrumb.Link>
-					<button on:click={() => ($authState.guilds.viewingContent = false)}> Guilds</button>
-				</Breadcrumb.Link>
+				<Breadcrumb.Link href={`/guilds?${$page.url.search.split('?')[1]}`}>Guilds</Breadcrumb.Link>
 			</Breadcrumb.Item>
 			<Breadcrumb.Separator />
 			<Breadcrumb.Item>

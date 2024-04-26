@@ -219,7 +219,8 @@ export const actions: Actions = {
         const formData = await request.formData();
         const wallPostId = formData.get("wallPostId") as string;
 
-        console.log(wallPostId)
-        console.log('here');
+        const { error } = await supabase.from("guild_wall_tb_post_new").delete().eq("id", Number(wallPostId));
+        if (error) return fail(401, { msg: error.message });
+        else return { msg: "Successfully deleted." };
     }
 };

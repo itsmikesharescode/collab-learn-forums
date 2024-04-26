@@ -7,12 +7,13 @@
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Users, FolderLock, FolderOpen } from 'lucide-svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { getUserState } from '$lib';
+	import { getAuthState, getUserState } from '$lib';
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { toast } from 'svelte-sonner';
 	import { goto, invalidateAll } from '$app/navigation';
 
+	const authState = getAuthState();
 	const userState = getUserState();
 
 	export let guildObj: CreatedGuildReference;
@@ -25,12 +26,17 @@
 		if (guild_privacy === 'private') {
 			const isJoined = guild_joined_tb_new.map((joinedVec) => joinedVec.user_id);
 
-			if (isJoined.includes($userState?.user_id ?? '')) return console.log('JOINED');
-
+			if (isJoined.includes($userState?.user_id ?? '')) {
+				$authState.guilds.guildObj = guildObj;
+				$authState.guilds.viewingContent = true;
+				return;
+			}
 			return (notJoinedDialog = true);
 		}
 
-		return console.log('PUBLIC');
+		$authState.guilds.guildObj = guildObj;
+		$authState.guilds.viewingContent = true;
+		return;
 	};
 
 	let formErrors: { passcode: string[] } | null = null;
@@ -46,6 +52,8 @@
 			switch (status) {
 				case 200:
 					invalidateAll();
+					$authState.guilds.guildObj = guildObj;
+					$authState.guilds.viewingContent = true;
 					toast.success('Join Guild', { description: msg });
 					joinGuildLoader = false;
 					break;

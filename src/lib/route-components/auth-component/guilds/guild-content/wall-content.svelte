@@ -9,6 +9,8 @@
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { toast } from 'svelte-sonner';
+	import { onMount } from 'svelte';
+	import { invalidateAll } from '$app/navigation';
 
 	const authState = getAuthState();
 
@@ -34,6 +36,8 @@
 		}
 	};
 
+	onMount(async () => await getWallPost());
+
 	let wallPostLoader = false;
 	let formErrors: { wallPost: string[] } | null = null;
 	const wallPostActionNews: SubmitFunction = () => {
@@ -46,6 +50,7 @@
 
 			switch (status) {
 				case 200:
+					invalidateAll();
 					wallPostLoader = false;
 					toast.success('Wall Post', { description: msg });
 					break;

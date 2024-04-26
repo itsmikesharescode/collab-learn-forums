@@ -1,4 +1,5 @@
 import { createGuildSchema, joinGuildSchema, updateInformationSchema, updatePasswordSchema, wallPostSchema } from "$lib/schema";
+import type { CreatedGuildReference, UserReference } from "$lib/types";
 import type { PostgrestError } from "@supabase/supabase-js";
 import { fail, redirect, type Actions } from "@sveltejs/kit";
 import type { ZodError } from "zod";
@@ -194,6 +195,19 @@ export const actions: Actions = {
 
         try {
             const result = wallPostSchema.parse(formData);
+            const guildObj = JSON.parse(result.guildObj) as CreatedGuildReference;
+            const userObj = JSON.parse(result.userObj) as UserReference;
+            const { error } = await supabase.from("guild_wall_tb_post_new").insert([{
+                guild_id: guildObj.id,
+                user_id: userObj.user_id,
+                user_fullname: userObj.user_fullname,
+                user_photo_link: userObj.user_photo_link,
+                wall_post: result.wallPost
+            }]);
+
+            if (error) return fail(401, { msg: error.message });
+            else return { msg: "Posted Successfully." };
+
         } catch (error) {
             const zodError = error as ZodError;
             const { fieldErrors } = zodError.flatten();

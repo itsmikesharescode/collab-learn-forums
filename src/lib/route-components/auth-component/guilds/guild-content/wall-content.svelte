@@ -96,7 +96,11 @@
 				</AlertDialog.Description>
 
 				<Textarea disabled={wallPostLoader} name="wallPost" placeholder="Type your message here." />
+				{#each formErrors?.wallPost ?? [] as errorMsg}
+					<p class="text-sm text-red-500">{errorMsg}</p>
+				{/each}
 			</AlertDialog.Header>
+
 			<AlertDialog.Footer>
 				<AlertDialog.Cancel disabled={wallPostLoader}>Cancel</AlertDialog.Cancel>
 				<Button disabled={wallPostLoader} type="submit">

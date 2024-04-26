@@ -4,8 +4,22 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
+	import { getAuthState, supabase } from '$lib';
+
+	const authState = getAuthState();
+
+	const { guildObj } = $authState.guilds;
 
 	let newPostDialog = false;
+
+	const getWallPost = async () => {
+		if ($supabase) {
+			const { data, error } = await $supabase
+				.from('guild_wall_tb_post_new')
+				.select('*')
+				.eq('guild_id', guildObj?.id);
+		}
+	};
 </script>
 
 <div class="flex justify-end">

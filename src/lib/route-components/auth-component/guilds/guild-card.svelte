@@ -11,8 +11,8 @@
 	import { enhance } from '$app/forms';
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import { toast } from 'svelte-sonner';
-	import { invalidateAll } from '$app/navigation';
-
+	import { goto, invalidateAll } from '$app/navigation';
+	import { page } from '$app/stores';
 	const authState = getAuthState();
 	const userState = getUserState();
 
@@ -28,15 +28,14 @@
 
 			if (isJoined.includes($userState?.user_id ?? '')) {
 				$authState.guilds.guildObj = guildObj;
-				$authState.guilds.viewingContent = true;
-				return;
+				return await goto(`/guilds/${guildObj.guild_name}?=${guildObj.storage_id}`);
 			}
 			return (notJoinedDialog = true);
 		}
 
 		$authState.guilds.guildObj = guildObj;
-		$authState.guilds.viewingContent = true;
-		return;
+
+		return await goto(`/guilds/${guildObj.guild_name}?=${guildObj.storage_id}`);
 	};
 
 	let formErrors: { passcode: string[] } | null = null;
@@ -51,9 +50,10 @@
 
 			switch (status) {
 				case 200:
-					invalidateAll();
+					await goto(`/guilds/${guildObj.guild_name}?=${guildObj.storage_id}`, {
+						invalidateAll: true
+					});
 					$authState.guilds.guildObj = guildObj;
-					$authState.guilds.viewingContent = true;
 					toast.success('Join Guild', { description: msg });
 					joinGuildLoader = false;
 					break;

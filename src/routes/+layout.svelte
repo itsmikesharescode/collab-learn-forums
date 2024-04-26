@@ -3,6 +3,13 @@
 	import '../app.pcss';
 	import { ModeWatcher } from 'mode-watcher';
 	import { Toaster } from '$lib/components/ui/sonner';
+
+	import { supabase } from '$lib';
+	import type { LayoutData } from './$types';
+
+	export let data: LayoutData;
+
+	supabase.set(data.supabase);
 </script>
 
 <Toaster />

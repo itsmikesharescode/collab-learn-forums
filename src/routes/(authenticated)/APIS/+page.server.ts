@@ -152,7 +152,7 @@ export const actions: Actions = {
         const initial = formData.get("initial") as string;
         const final = formData.get("final") as string;
 
-        const { data: paginatedGuilds, error: paginateGuildError } = await supabase.from("created_guild_tb_new").select("*").order("created_at", { ascending: false }).range(Number(initial), Number(final));
+        const { data: paginatedGuilds, error: paginateGuildError } = await supabase.from("created_guild_tb_new").select(`*, guild_joined_tb_new ("*")`).order("created_at", { ascending: false }).range(Number(initial), Number(final));
 
         if (paginateGuildError) return fail(401, { msg: paginateGuildError.message });
         else if (initial) return {

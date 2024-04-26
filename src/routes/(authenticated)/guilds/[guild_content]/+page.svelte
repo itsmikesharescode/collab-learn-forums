@@ -4,6 +4,7 @@
 	import { getAuthState, supabase } from '$lib';
 	import { goto } from '$app/navigation';
 	import GuildContent from '$lib/route-components/auth-component/guilds/guild-content.svelte';
+	import type { GuildWallReference } from '$lib/types';
 
 	const authState = getAuthState();
 
@@ -11,18 +12,7 @@
 
 	let hiddenContent = true;
 
-	const { guildObj } = $authState.guilds;
 	const tempStore = data.createdGuilds.data?.map((guild) => guild.storage_id);
-
-	const getWallPost = async () => {
-		if ($supabase) {
-			const { data, error } = await $supabase
-				?.from('guild_wall_tb_post_new')
-				.select('*')
-				.order('created_at', { ascending: true })
-				.eq('guild_id', guildObj?.id);
-		}
-	};
 
 	onMount(async () => {
 		if (tempStore) {

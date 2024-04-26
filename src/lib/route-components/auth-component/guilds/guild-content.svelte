@@ -17,7 +17,7 @@
 	let selections = 'wall';
 </script>
 
-<Card.Root class="mt-[20px] border-none">
+<Card.Root class="mt-[20px] overflow-hidden border-none">
 	<Breadcrumb.Root class="mx-[20px]">
 		<Breadcrumb.List>
 			<Breadcrumb.Item>
@@ -62,7 +62,4 @@
 			<WallContent />
 		{/if}
 	</Card.Content>
-	<Card.Footer>
-		<p>Card Footer</p>
-	</Card.Footer>
 </Card.Root>

@@ -1,4 +1,5 @@
 import { createGuildSchema, joinGuildSchema, updateInformationSchema, updatePasswordSchema } from "$lib/schema";
+import type { PostgrestError } from "@supabase/supabase-js";
 import { fail, redirect, type Actions } from "@sveltejs/kit";
 import type { ZodError } from "zod";
 
@@ -165,6 +166,22 @@ export const actions: Actions = {
         const formData = Object.fromEntries(await request.formData());
         try {
             const result = joinGuildSchema.parse(formData);
+            const { user } = await safeGetSession();
+
+            if (user) {
+                const { data, error } = await supabase.rpc("join_guild_new", {
+                    user_id_param: user.id,
+                    user_photo_link_param: result.userPhotoLink,
+                    user_fullname_param: result.userFullname,
+                    guild_id_param: Number(result.guildId),
+                    passcode_param: result.passcode
+                }) as { data: boolean, error: PostgrestError | null }
+
+                return
+            }
+
+            return redirect(302, "/?no-session")
+
         } catch (error) {
             const zodError = error as ZodError;
             const { fieldErrors } = zodError.flatten();

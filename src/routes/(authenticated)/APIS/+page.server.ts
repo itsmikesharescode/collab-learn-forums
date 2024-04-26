@@ -167,7 +167,7 @@ export const actions: Actions = {
         try {
             const result = joinGuildSchema.parse(formData);
             const { user } = await safeGetSession();
-
+            console.log(result)
             if (user) {
                 const { data, error } = await supabase.rpc("join_guild_new", {
                     user_id_param: user.id,
@@ -177,7 +177,9 @@ export const actions: Actions = {
                     passcode_param: result.passcode
                 }) as { data: boolean, error: PostgrestError | null }
 
-                return
+                if (error) return fail(401, { msg: error.message });
+                else if (data) return { msg: "Already Joined" };
+                else return { msg: "Joined Success." };
             }
 
             return redirect(302, "/?no-session")

@@ -54,7 +54,6 @@
 				case 200:
 					await goto('/guilds', { invalidateAll: true });
 					toast.success('Create Guild', { description: msg });
-					console.log(msg);
 					createGloader = false;
 					break;
 
@@ -69,7 +68,6 @@
 					previewURL = undefined;
 					toast.error('Create Guild', { description: msg });
 					createGloader = false;
-					console.log(msg);
 					break;
 			}
 			await update();

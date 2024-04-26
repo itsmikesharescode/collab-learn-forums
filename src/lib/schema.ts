@@ -70,7 +70,6 @@ export const createGuildSchema = z.object({
 });
 
 export const joinGuildSchema = z.object({
-
     userId: z.string(),
     userPhotoLink: z.string(),
     userFullname: z.string(),

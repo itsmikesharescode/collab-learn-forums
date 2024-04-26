@@ -73,6 +73,11 @@
 			enctype="multipart/form-data"
 			use:enhance={joinGuildActionNews}
 		>
+			<input name="userId" type="hidden" value={$userState?.user_id} />
+			<input name="userPhotoLink" type="hidden" value={$userState?.user_photo_link} />
+			<input name="userFullname" type="hidden" value={$userState?.user_fullname} />
+			<input name="guildId" type="hidden" value={guildObj.id} />
+
 			<AlertDialog.Header>
 				<AlertDialog.Title>{guildObj.guild_name}</AlertDialog.Title>
 				<AlertDialog.Description class="max-h-[350px] overflow-auto"

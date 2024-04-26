@@ -12,7 +12,7 @@
 	import { onMount } from 'svelte';
 
 	import { flip } from 'svelte/animate';
-	import { fly } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 	import DeletePost from './wall-content-operation/deletePost.svelte';
 
 	const authState = getAuthState();
@@ -127,7 +127,7 @@
 <div class="mt-[20px] grid grid-cols-1 gap-[10px]">
 	{#if $guildContentStore.wallPost?.length}
 		{#each $guildContentStore.wallPost ?? [] as wallPostObj, index (wallPostObj.id)}
-			<div class="" animate:flip={{ duration: 350 }} transition:fly={{ x: 200, duration: 600 }}>
+			<div class="" animate:flip={{ duration: 350 }} in:fly={{ x: 200, duration: 1000 }}>
 				<Card.Root>
 					<Card.Header>
 						<div class="flex items-center gap-[10px]">
@@ -147,10 +147,12 @@
 						</p>
 					</Card.Content>
 
-					<Card.Footer class="flex items-center justify-end gap-[10px]">
-						<Button variant="secondary">Edit Post</Button>
-						<DeletePost {getWallPost} {wallPostObj} />
-					</Card.Footer>
+					{#if $userState?.user_id === wallPostObj.user_id}
+						<Card.Footer class="flex items-center justify-end gap-[10px]">
+							<Button variant="secondary">Edit Post</Button>
+							<DeletePost {getWallPost} {wallPostObj} />
+						</Card.Footer>
+					{/if}
 				</Card.Root>
 			</div>
 		{/each}

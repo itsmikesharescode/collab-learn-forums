@@ -73,6 +73,7 @@
 		use:enhance={registerActionNews}
 		class="flex flex-col gap-[20px]"
 	>
+		<input name="passwordStrength" type="hidden" value={passwordCheck} />
 		<div class="flex w-full flex-col gap-1.5">
 			<Label for="firstName">First Name</Label>
 			<Input

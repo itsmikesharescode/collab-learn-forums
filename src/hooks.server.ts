@@ -22,7 +22,7 @@ export const handle: Handle = async ({ event, resolve }) => {
         },
     })
 
-    event.locals.compressImage = async (fileObject, targetSizeKB = 300) => {
+    event.locals.compressImage = async (fileObject, targetSizeKB = 300, width = 150, height = 150) => {
         const maxQuality = 100;
         const inputImageBuffer = await fileObject.arrayBuffer();
 
@@ -32,7 +32,7 @@ export const handle: Handle = async ({ event, resolve }) => {
         try {
             // Resize and crop the image to exactly 150x150 pixels
             outputBuffer = await sharp(Buffer.from(inputImageBuffer))
-                .resize({ width: 150, height: 150, fit: 'cover' }) // Resize to cover 150x150
+                .resize({ width, height, fit: 'cover' }) // Resize to cover 150x150
                 .png({ quality: quality }) // Set PNG quality
                 .toBuffer();
 

@@ -2,8 +2,9 @@
 	import { getAuthState } from '$lib';
 	import * as Card from '$lib/components/ui/card';
 	import * as Avatar from '$lib/components/ui/avatar';
+	import type { CreatedProjectReference } from '$lib/types';
 
-	const authState = getAuthState();
+	export let recentProjects: CreatedProjectReference[] | null;
 </script>
 
 <div class="">
@@ -16,7 +17,7 @@
 	<div
 		class="grid h-[450px] grid-cols-1 grid-rows-3 gap-[10px] overflow-auto py-[10px] lg:grid-cols-2"
 	>
-		{#each $authState.dashboard.recentProjectArray ?? [] as recentProject}
+		{#each recentProjects ?? [] as recentProject}
 			<Card.Root class=" flex flex-col justify-center gap-[20px] p-[10px]">
 				<div class="flex">
 					<Avatar.Root class="h-[100px] w-[100px]">

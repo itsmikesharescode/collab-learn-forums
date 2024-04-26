@@ -13,7 +13,9 @@
 		<Avatar.Fallback>CN</Avatar.Fallback>
 	</Avatar.Root>
 	<Card.Header>
-		<Button class="absolute right-0 top-0 m-[20px]" href="/edit-profile">Edit Profile</Button>
+		<Button class="absolute right-0 top-0 m-[20px]" href="/dashboard/edit-profile"
+			>Edit Profile</Button
+		>
 		<Card.Title>{$userState?.user_fullname}</Card.Title>
 		<Card.Description>{$userState?.user_bio}</Card.Description>
 	</Card.Header>

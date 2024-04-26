@@ -1,7 +1,10 @@
 import { writable, type Writable } from "svelte/store"
 import type { AuthState, StaticStates, UserReference } from "./types";
 import { getContext, setContext } from "svelte";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
+//supabase client
+export const supabase = writable<SupabaseClient | null>();
 
 // static stores
 export const setStaticState = (state: StaticStates) => {

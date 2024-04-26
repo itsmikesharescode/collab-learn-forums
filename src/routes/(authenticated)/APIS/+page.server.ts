@@ -167,7 +167,6 @@ export const actions: Actions = {
         try {
             const result = joinGuildSchema.parse(formData);
             const { user } = await safeGetSession();
-            console.log(result)
             if (user) {
                 const { data, error } = await supabase.rpc("join_guild_new", {
                     user_id_param: user.id,

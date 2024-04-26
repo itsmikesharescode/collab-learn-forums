@@ -2,11 +2,12 @@
 	import { getAuthState, getUserState, setAuthState, setUserState } from '$lib';
 	import DesktopSidebar from '$lib/route-components/auth-component/navigation/desktop-sidebar.svelte';
 	import NavRouter from '$lib/route-components/auth-component/navigation/nav-router.svelte';
+	import { onMount } from 'svelte';
 	import type { LayoutServerData } from './$types';
 
 	export let data: LayoutServerData;
 
-	$: setAuthState({
+	setAuthState({
 		activeURL: '/dashboard',
 		guilds: {
 			paginatedGuilds: data.createdGuilds.data,

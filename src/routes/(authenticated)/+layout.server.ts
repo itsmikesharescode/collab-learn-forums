@@ -6,7 +6,7 @@ import { redirect } from "@sveltejs/kit";
 export const load: LayoutServerLoad = async ({ locals: { supabase, safeGetSession } }) => {
 
     const { user } = await safeGetSession();
-
+    console.log("FIRE")
     if (user) {
         return {
             userData: await supabase.from("user_list_tb").select("*").eq("user_id", user.id).limit(1).single() as PostgrestSingleResponse<UserReference>,

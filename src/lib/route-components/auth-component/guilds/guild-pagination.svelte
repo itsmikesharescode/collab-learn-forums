@@ -2,9 +2,9 @@
 	import { enhance } from '$app/forms';
 	import { getAuthState } from '$lib';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import * as Pagination from '$lib/components/ui/pagination';
 	import type { CreatedGuildReference, ResultModel } from '$lib/types';
 	import type { SubmitFunction } from '@sveltejs/kit';
+	import { toast } from 'svelte-sonner';
 
 	const authState = getAuthState();
 
@@ -23,10 +23,11 @@
 			switch (status) {
 				case 200:
 					$authState.guilds.paginatedGuilds = paginatedGuilds;
+
 					break;
 
 				case 401:
-					console.log(msg);
+					toast.error('Paginate Guild', { description: msg });
 					break;
 			}
 			await update();

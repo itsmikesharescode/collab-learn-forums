@@ -67,6 +67,16 @@ export type CreatedGuildReference = {
     guild_joined_tb_new: JoinedGuildReferece[]
 }
 
+export type GuildWallReference = {
+    id: number
+    created_at: string
+    guild_id: number
+    user_id: string
+    user_fullname: string
+    user_photo_link: string
+    wall_post: string
+}
+
 
 //joined_guild_tb
 export type JoinedGuildReference = {

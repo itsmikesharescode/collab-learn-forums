@@ -1,4 +1,4 @@
-import { createGuildSchema, joinGuildSchema, updateInformationSchema, updatePasswordSchema } from "$lib/schema";
+import { createGuildSchema, joinGuildSchema, updateInformationSchema, updatePasswordSchema, wallPostSchema } from "$lib/schema";
 import type { PostgrestError } from "@supabase/supabase-js";
 import { fail, redirect, type Actions } from "@sveltejs/kit";
 import type { ZodError } from "zod";
@@ -190,6 +190,14 @@ export const actions: Actions = {
     },
 
     wallPostAction: async ({ locals: { supabase, safeGetSession }, request }) => {
+        const formData = Object.fromEntries(await request.formData());
 
+        try {
+            const result = wallPostSchema.parse(formData);
+        } catch (error) {
+            const zodError = error as ZodError;
+            const { fieldErrors } = zodError.flatten();
+            return fail(400, { errors: fieldErrors });
+        }
     }
 };

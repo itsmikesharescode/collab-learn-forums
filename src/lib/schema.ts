@@ -22,3 +22,64 @@ export const registerSchema = z.object({
     }
 });
 
+
+export const updateInformationSchema = z.object({
+    bio: z.string().min(5, { message: "Must enter a valid bio." }),
+    firstName: z.string().min(1, { message: "Must enter a valid first name" }),
+    lastName: z.string().min(1, { message: "Must enter a valid last name." }),
+    address: z.string().min(3, { message: "Must enter a valid address." }),
+    barangay: z.string().min(3, { message: "Must enter a valid barangay" }),
+    city: z.string().min(3, { message: "Must enter a valid city." }),
+    religion: z.string().min(3, { message: "Must enter a valid religion" }),
+    contactNumber: z.string().min(8, { message: "Must enter a valid contact number." }),
+});
+
+export const updatePasswordSchema = z.object({
+    passwordStrength: z.string(),
+    password: z.string().min(6, { message: "Must choose a strong password." }),
+    confirmPassword: z.string()
+}).superRefine(({ password, confirmPassword }, ctx) => {
+    if (password !== confirmPassword) {
+        ctx.addIssue({
+            code: "custom",
+            message: "Password and Confirm Password must match",
+            path: ["confirmPassword"]
+        });
+    }
+});
+
+export const createGuildSchema = z.object({
+    hostName: z.string(),
+    hostPhoto: z.string(),
+    guildPhoto: z.instanceof(File).refine((file) => file.size > 0, { message: "Must upload a guild photo." }),
+    guildName: z.string().min(4, { message: "Enter a valid guild name." }),
+    maxUsers: z.string().refine(val => Number(val) > 0, { message: "Must enter a valid max users." }),
+    guildDescription: z.string().min(5, { message: "Must enter a valid description." }),
+    privacy: z.string().min(1, { message: "Must choose privacy." }),
+    passcode: z.string()
+}).superRefine(({ privacy, passcode }, ctx) => {
+    if (privacy === "private") {
+        if (passcode.length < 6) {
+            ctx.addIssue({
+                code: "custom",
+                message: "Must enter a strong passcode.",
+                path: ["passcode"]
+            });
+        }
+    }
+});
+
+export const joinGuildSchema = z.object({
+    userId: z.string(),
+    userPhotoLink: z.string(),
+    userFullname: z.string(),
+    guildId: z.string(),
+    passcode: z.string().min(1, { message: "Must enter a passcode." })
+})
+
+export const wallPostSchema = z.object({
+    guildObj: z.string(),
+    userObj: z.string(),
+    wallPost: z.string().min(10, { message: "Message must at least greater than 10 characters" }).max(800, { message: "Maximum character is 800." })
+})
+

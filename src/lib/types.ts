@@ -16,36 +16,12 @@ export interface StaticStates {
 
 // types for authenticated states
 export interface AuthState {
-    activeURL: string
-
-    dashboard: {
-        recentProjectArray: CreatedProjectReference[] | null,
-        joinedGuildArray: JoinedGuildReference[] | null
+    activeURL: string,
+    guilds: {
+        viewingContent: boolean
+        guildObj: CreatedGuildReference | null
     }
 
-    /*  projects: {
-         joinedProject: boolean
-         showEditTools: boolean
-         showSettings: boolean
-         createdProjects: CreatedProjectReference[] | null
-         projectObj: CreatedProjectReference | null
-     }
- 
-     guilds: {
-         createdGuilds: CreatedGuildReference[] | null
-         joinedGuild: boolean
-         guildObj: CreatedGuildReference | null
-         guildNotes: GuildWallReference[] | null
-         guildNoteObj: GuildWallReference | null
-         guildChats: GuildChatReference[] | null
-     }
- 
-     modules: {
-         createdModules: CreatedModuleReference[] | null
-         moduleObj: CreatedModuleReference | null
-         showModule: boolean
-          moduleComments: ModuleCommentsReference[] | null
-     } */
 }
 
 //user_list_tb
@@ -64,21 +40,41 @@ export type UserReference = {
     user_contact: string
 }
 
+export type JoinedGuildReferece = {
+    id: number
+    created_at: string
+    guild_id: number
+    user_id: string
+}
+
 //created_guild_tb
 export type CreatedGuildReference = {
     id: number
     created_at: string
     user_id: string
-    host_name: string
-    is_private: boolean
     guild_name: string
-    max_users: number
-    joined_count: number
-    description: string
-    passcode: string
-    image_url: string
-    host_photo: string
-    searchTerms: string
+    guild_max_users: number
+    guild_joined_count: number
+    guild_description: string
+    guild_host_name: string
+    guild_privacy: string
+    guild_photo_link: string | null
+    guild_host_photo_link: string | null
+    guild_passcode: string | null
+    storage_id: string
+    storage_fullpath: string
+    storage_path: string
+    guild_joined_tb_new: JoinedGuildReferece[]
+}
+
+export type GuildWallReference = {
+    id: number
+    created_at: string
+    guild_id: number
+    user_id: string
+    user_fullname: string
+    user_photo_link: string
+    wall_post: string
 }
 
 

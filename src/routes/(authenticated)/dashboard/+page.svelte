@@ -5,12 +5,16 @@
 	import RecentProjects from '$lib/route-components/auth-component/dashboard/recent-projects.svelte';
 	import WelcomeBack from '$lib/route-components/auth-component/dashboard/welcome-back.svelte';
 	import type { ChartConfiguration } from 'chart.js/auto';
+
+	export let data: LayoutServerData;
+
 	// Access the canvas element using a Svelte directive
 	let canvasElement: string | HTMLCanvasElement;
 
 	// After the canvas element is mounted, invoke chartRender with lineData
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import type { LayoutServerData } from '../$types';
 
 	onMount(() => {
 		const lineData: ChartConfiguration<'line', number[], unknown> = {
@@ -100,11 +104,11 @@
 		<ProfileCard />
 	</div>
 
-	<div class="">
-		<RecentProjects />
+	<!-- <div class="">
+		<RecentProjects recentProjects={data.recentProjects.data} />
 	</div>
 
 	<div class="">
-		<JoinedGuild />
-	</div>
+		<JoinedGuild joinedGuilds={data.joinedGuilds.data} />
+	</div> -->
 </div>

@@ -15,7 +15,7 @@
 		},
 
 		{
-			url: '/guilds',
+			url: '/guilds?=0-5-0',
 			title: 'GUILDS'
 		},
 
@@ -64,10 +64,6 @@
 						<Avatar.Image src={$userState?.user_photo_link} alt="@shadcn" />
 						<Avatar.Fallback>CN</Avatar.Fallback>
 					</Avatar.Root>
-
-					<Button href="/edit-profile" on:click={() => (showMobileSlider = false)}
-						>Edit Profile</Button
-					>
 				</div>
 
 				<div class="">

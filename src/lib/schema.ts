@@ -77,3 +77,9 @@ export const joinGuildSchema = z.object({
     passcode: z.string().min(1, { message: "Must enter a passcode." })
 })
 
+export const wallPostSchema = z.object({
+    guildObj: z.string(),
+    userObj: z.string(),
+    wallPost: z.string().min(10, { message: "Message must at least greater than 10 characters" }).max(800, { message: "Maximum character is 800." })
+})
+

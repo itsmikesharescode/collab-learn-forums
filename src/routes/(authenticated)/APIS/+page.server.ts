@@ -93,7 +93,7 @@ export const actions: Actions = {
         }
     },
 
-    //guild route
+    //guild route 
     createGuildAction: async ({ locals: { supabase, safeGetSession, compressImage }, request }) => {
         const formData = Object.fromEntries(await request.formData());
 
@@ -147,7 +147,6 @@ export const actions: Actions = {
         }
     },
 
-    //paginate guilds
     guildPaginateAction: async ({ locals: { supabase, safeGetSession }, request }) => {
         const formData = await request.formData();
         const initial = formData.get("initial") as string;
@@ -188,5 +187,9 @@ export const actions: Actions = {
             const { fieldErrors } = zodError.flatten();
             return fail(400, { errors: fieldErrors });
         }
+    },
+
+    wallPostAction: async ({ locals: { supabase, safeGetSession }, request }) => {
+
     }
 };

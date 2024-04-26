@@ -4,17 +4,19 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	import { getAuthState, supabase } from '$lib';
+	import { getAuthState, getUserState, supabase } from '$lib';
 	import type { GuildWallReference } from '$lib/types';
 
 	const authState = getAuthState();
 
 	const { guildObj } = $authState.guilds;
+	const userState = getUserState();
 
 	let newPostDialog = false;
 
 	let wallPosts: GuildWallReference[] | null = [];
 
+	//get wall post
 	const getWallPost = async () => {
 		if ($supabase) {
 			const { data, error } = await $supabase
@@ -36,20 +38,25 @@
 
 <AlertDialog.Root bind:open={newPostDialog}>
 	<AlertDialog.Content>
-		<AlertDialog.Header>
-			<AlertDialog.Title>New Post</AlertDialog.Title>
-			<AlertDialog.Description>
-				This will create a new post in wall tab, that other members can see.
-			</AlertDialog.Description>
+		<form class="flex flex-col gap-[20px]">
+			<input name="guildObj" type="hidden" value={JSON.stringify(guildObj)} />
+			<input name="userObj" type="hidden" value={JSON.stringify($userState)} />
+			<AlertDialog.Header>
+				<AlertDialog.Title>New Post</AlertDialog.Title>
+				<AlertDialog.Description>
+					This will create a new post in wall tab, that other members can see.
+				</AlertDialog.Description>
 
-			<Textarea placeholder="Type your message here." />
-		</AlertDialog.Header>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action>Continue</AlertDialog.Action>
-		</AlertDialog.Footer>
+				<Textarea name="wallPost" placeholder="Type your message here." />
+			</AlertDialog.Header>
+			<AlertDialog.Footer>
+				<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+				<Button type="submit">Create Post</Button>
+			</AlertDialog.Footer>
+		</form>
 	</AlertDialog.Content>
 </AlertDialog.Root>
+
 {#if wallPosts?.length}
 	{#each wallPosts ?? [] as wallPostObj}
 		<Card.Root>

@@ -5,7 +5,10 @@
 	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import { getAuthState, getUserState, supabase } from '$lib';
-	import type { GuildWallReference } from '$lib/types';
+	import type { GuildWallReference, ResultModel } from '$lib/types';
+	import { enhance } from '$app/forms';
+	import type { SubmitFunction } from '@sveltejs/kit';
+	import { toast } from 'svelte-sonner';
 
 	const authState = getAuthState();
 
@@ -30,6 +33,36 @@
 			wallPosts = data;
 		}
 	};
+
+	let wallPostLoader = false;
+	let formErrors: { wallPost: string[] } | null = null;
+	const wallPostActionNews: SubmitFunction = () => {
+		wallPostLoader = true;
+		return async ({ result, update }) => {
+			const {
+				status,
+				data: { msg, errors }
+			} = result as ResultModel<{ msg: string; errors: { wallPost: string[] } }>;
+
+			switch (status) {
+				case 200:
+					wallPostLoader = false;
+					toast.success('Wall Post', { description: msg });
+					break;
+
+				case 400:
+					formErrors = errors;
+					wallPostLoader = false;
+					break;
+
+				case 401:
+					toast.error('Wall Post', { description: msg });
+					wallPostLoader = false;
+					break;
+			}
+			await update();
+		};
+	};
 </script>
 
 <div class="flex justify-end">
@@ -38,20 +71,41 @@
 
 <AlertDialog.Root bind:open={newPostDialog}>
 	<AlertDialog.Content>
-		<form class="flex flex-col gap-[20px]">
-			<input name="guildObj" type="hidden" value={JSON.stringify(guildObj)} />
-			<input name="userObj" type="hidden" value={JSON.stringify($userState)} />
+		<form
+			method="post"
+			action="/APIS?/wallPostAction"
+			use:enhance={wallPostActionNews}
+			class="flex flex-col gap-[20px]"
+		>
+			<input
+				disabled={wallPostLoader}
+				name="guildObj"
+				type="hidden"
+				value={JSON.stringify(guildObj)}
+			/>
+			<input
+				disabled={wallPostLoader}
+				name="userObj"
+				type="hidden"
+				value={JSON.stringify($userState)}
+			/>
 			<AlertDialog.Header>
 				<AlertDialog.Title>New Post</AlertDialog.Title>
 				<AlertDialog.Description>
 					This will create a new post in wall tab, that other members can see.
 				</AlertDialog.Description>
 
-				<Textarea name="wallPost" placeholder="Type your message here." />
+				<Textarea disabled={wallPostLoader} name="wallPost" placeholder="Type your message here." />
 			</AlertDialog.Header>
 			<AlertDialog.Footer>
-				<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-				<Button type="submit">Create Post</Button>
+				<AlertDialog.Cancel disabled={wallPostLoader}>Cancel</AlertDialog.Cancel>
+				<Button disabled={wallPostLoader} type="submit">
+					{#if wallPostLoader}
+						Posting...
+					{:else}
+						Create Post
+					{/if}
+				</Button>
 			</AlertDialog.Footer>
 		</form>
 	</AlertDialog.Content>

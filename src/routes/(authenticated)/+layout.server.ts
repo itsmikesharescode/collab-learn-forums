@@ -3,14 +3,26 @@ import type { PostgrestSingleResponse } from "@supabase/supabase-js";
 import type { LayoutServerLoad } from "./$types";
 import { redirect } from "@sveltejs/kit";
 
-export const load: LayoutServerLoad = async ({ locals: { supabase, safeGetSession } }) => {
+export const load: LayoutServerLoad = async ({ locals: { supabase, safeGetSession }, url }) => {
 
     const { user } = await safeGetSession();
-    console.log("FIRE")
+
     if (user) {
+
+        let initial = 0;
+        let final = 5;
+
+
+        if (url.pathname === "/guilds") {
+            if (url.search) {
+                initial = Number(url.search.slice(2).split("-")[0]);
+                final = Number(url.search.slice(2).split("-")[1]);
+            }
+        }
+
         return {
             userData: await supabase.from("user_list_tb").select("*").eq("user_id", user.id).limit(1).single() as PostgrestSingleResponse<UserReference>,
-            createdGuilds: await supabase.from("created_guild_tb_new").select(`*, guild_joined_tb_new ("*")`).order("created_at", { ascending: false }).range(0, 5) as PostgrestSingleResponse<CreatedGuildReference[]>,
+            createdGuilds: await supabase.from("created_guild_tb_new").select(`*, guild_joined_tb_new ("*")`).order("created_at", { ascending: false }).range(initial, final) as PostgrestSingleResponse<CreatedGuildReference[]>,
             guildCount: await supabase.from("created_guild_tb_new").select("*", { count: "exact" }) as PostgrestSingleResponse<CreatedGuildReference[]>,
 
             /* createdGuilds: await supabase.from("created_guild_tb").select("*").order('id', { ascending: false }) as PostgrestSingleResponse<CreatedGuildReference[]>,

@@ -1,63 +1,36 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import { getAuthState } from '$lib';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import type { CreatedGuildReference, ResultModel } from '$lib/types';
-	import type { SubmitFunction } from '@sveltejs/kit';
-	import { toast } from 'svelte-sonner';
-
-	const authState = getAuthState();
 
 	export let count: number | null;
 
-	const guildPaginateActionNews: SubmitFunction = () => {
-		return async ({ result, update }) => {
-			const {
-				status,
-				data: { msg, paginatedGuilds }
-			} = result as ResultModel<{
-				msg: string;
-				paginatedGuilds: CreatedGuildReference[];
-			}>;
+	let currentPage = 0;
 
-			switch (status) {
-				case 200:
-					$authState.guilds.paginatedGuilds = paginatedGuilds;
-
-					break;
-
-				case 401:
-					toast.error('Paginate Guild', { description: msg });
-					break;
-			}
-			await update();
-		};
+	//i hate svelte now
+	$: detectColor = (index: number) => {
+		if ($page.url.search) {
+			return Number($page.url.search.slice(2).split('-')[2]) === index ? 'bg-green-500' : '';
+		} else return currentPage === index ? 'bg-green-500' : '';
 	};
 </script>
 
-<form
-	method="post"
-	action="/APIS?/guildPaginateAction"
-	enctype="multipart/form-data"
-	use:enhance={guildPaginateActionNews}
->
-	<div class="mt-[50px] flex gap-[10px] overflow-auto">
-		<input name="initial" type="hidden" value={$authState.guilds.currentPage * 5} />
-		<input
-			name="final"
-			type="hidden"
-			value={($authState.guilds.currentPage + 1 === 0 ? 1 : $authState.guilds.currentPage + 1) * 5}
-		/>
-		{#if count}
-			{#each Array(Math.ceil(count / 6)) as guilds, index}
-				<Button
-					class={$authState.guilds.currentPage === index ? 'bg-green-500 ' : ''}
-					type="submit"
-					on:click={() => ($authState.guilds.currentPage = index)}
-				>
-					{index + 1}
-				</Button>
-			{/each}
-		{/if}
-	</div>
-</form>
+<div class="mt-[50px] flex gap-[10px] overflow-auto">
+	{#if count}
+		{#each Array(Math.ceil(count / 6)) as guilds, index}
+			<Button
+				class={detectColor(index)}
+				type="submit"
+				on:click={() => {
+					currentPage = index;
+
+					goto(
+						`/guilds?=${currentPage * 5}-${(currentPage + 1 === 0 ? 1 : currentPage + 1) * 5}-${currentPage}`
+					);
+				}}
+			>
+				{index + 1}
+			</Button>
+		{/each}
+	{/if}
+</div>
